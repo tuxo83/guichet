@@ -1,0 +1,739 @@
+# Copyright (C) 2026 tuxo83
+# This file is distributed under the MIT.
+msgid ""
+msgstr ""
+"Project-Id-Version: Guichet 0.1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-10-30T22:39:23+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: guichet\n"
+
+#. Plugin Name of the plugin
+#: guichet.php
+msgid "Guichet"
+msgstr ""
+
+#. Description of the plugin
+#: guichet.php
+msgid "An assistant that answers your visitors from your documents, and can do nothing else. Several guichets, each with its audience, limits and engine tokens; the engine connects out to your site."
+msgstr ""
+
+#. Author of the plugin
+#: guichet.php
+msgid "tuxo83"
+msgstr ""
+
+#: includes/class-guichet-admin.php:29
+msgid "Settings"
+msgstr ""
+
+#: includes/class-guichet-admin.php:43
+msgid "Copied"
+msgstr ""
+
+#: includes/class-guichet-admin.php:44
+msgid "Delete this guichet, its threads and its tokens? This cannot be undone."
+msgstr ""
+
+#: includes/class-guichet-admin.php:45
+msgid "Revoke this token? The engine using it will be refused at once."
+msgstr ""
+
+#: includes/class-guichet-admin.php:61
+#: includes/class-guichet-admin.php:469
+#: includes/class-guichet-admin.php:512
+msgid "You are not allowed to do this."
+msgstr ""
+
+#: includes/class-guichet-admin.php:81
+msgid "Guichet saved."
+msgstr ""
+
+#: includes/class-guichet-admin.php:82
+msgid "Guichet deleted."
+msgstr ""
+
+#: includes/class-guichet-admin.php:83
+msgid "Token revoked."
+msgstr ""
+
+#: includes/class-guichet-admin.php:84
+msgid "This identifier is already used by another guichet."
+msgstr ""
+
+#: includes/class-guichet-admin.php:85
+msgid "The identifier needs letters or digits (a-z, 0-9, -)."
+msgstr ""
+
+#: includes/class-guichet-admin.php:99
+msgid "never connected"
+msgstr ""
+
+#: includes/class-guichet-admin.php:99
+msgid "no token"
+msgstr ""
+
+#. translators: %s: a duration, such as "8 seconds"
+#: includes/class-guichet-admin.php:102
+#, php-format
+msgid "seen %s ago"
+msgstr ""
+
+#: includes/class-guichet-admin.php:108
+#: includes/class-guichet-admin.php:276
+msgid "Everyone"
+msgstr ""
+
+#: includes/class-guichet-admin.php:108
+msgid "visitors known by IP + cookie"
+msgstr ""
+
+#: includes/class-guichet-admin.php:113
+#: includes/class-guichet-admin.php:266
+msgid "Signed-in members"
+msgstr ""
+
+#: includes/class-guichet-admin.php:115
+#: includes/class-guichet-admin.php:265
+msgid "Administrators only"
+msgstr ""
+
+#: includes/class-guichet-admin.php:132
+#: includes/class-guichet-admin.php:212
+msgid "Add a guichet"
+msgstr ""
+
+#: includes/class-guichet-admin.php:133
+msgid "Each guichet has its audience, its limits and its tokens. Place it with a shortcode or the <strong>Guichet</strong> block."
+msgstr ""
+
+#. translators: 1: open guichets, 2: all guichets
+#: includes/class-guichet-admin.php:137
+msgid "Open guichets"
+msgstr ""
+
+#. translators: 1: open guichets, 2: all guichets
+#: includes/class-guichet-admin.php:137
+#, php-format
+msgid "%1$s <small>of %2$s</small>"
+msgstr ""
+
+#: includes/class-guichet-admin.php:138
+msgid "Questions today"
+msgstr ""
+
+#: includes/class-guichet-admin.php:139
+msgid "Answered in time"
+msgstr ""
+
+#: includes/class-guichet-admin.php:140
+msgid "Average answer time"
+msgstr ""
+
+#. translators: %s: number of guichets
+#: includes/class-guichet-admin.php:150
+#, php-format
+msgid "%s items"
+msgstr ""
+
+#: includes/class-guichet-admin.php:151
+#: includes/class-guichet-admin.php:152
+msgid "Search a guichet"
+msgstr ""
+
+#: includes/class-guichet-admin.php:154
+#: includes/class-guichet-admin.php:243
+msgid "Name"
+msgstr ""
+
+#: includes/class-guichet-admin.php:154
+msgid "Audience"
+msgstr ""
+
+#: includes/class-guichet-admin.php:154
+#: includes/class-guichet-admin.php:409
+msgid "State"
+msgstr ""
+
+#. translators: %s: number of questions
+#: includes/class-guichet-admin.php:154
+#: includes/class-guichet-admin.php:416
+msgid "Today"
+msgstr ""
+
+#: includes/class-guichet-admin.php:154
+#: includes/class-guichet-admin.php:395
+msgid "Shortcode"
+msgstr ""
+
+#: includes/class-guichet-admin.php:157
+msgid "No guichet yet."
+msgstr ""
+
+#: includes/class-guichet-admin.php:172
+msgid "Edit"
+msgstr ""
+
+#. translators: %s: number of active tokens
+#: includes/class-guichet-admin.php:175
+#, php-format
+msgid "Tokens (%s)"
+msgstr ""
+
+#: includes/class-guichet-admin.php:177
+#: includes/class-guichet-admin.php:314
+msgid "Journal"
+msgstr ""
+
+#: includes/class-guichet-admin.php:179
+#: includes/class-guichet-admin.php:428
+msgid "Delete"
+msgstr ""
+
+#: includes/class-guichet-admin.php:182
+#: includes/class-guichet-admin.php:412
+#: includes/class-guichet-front.php:127
+#: includes/class-guichet-front.php:140
+msgid "Open"
+msgstr ""
+
+#: includes/class-guichet-admin.php:182
+#: includes/class-guichet-admin.php:412
+#: includes/class-guichet-front.php:127
+#: includes/class-guichet-front.php:141
+msgid "Closed"
+msgstr ""
+
+#. translators: %s: number of questions
+#: includes/class-guichet-admin.php:186
+#: includes/class-guichet-admin.php:416
+#, php-format
+msgid "%s questions"
+msgstr ""
+
+#. translators: %s: a percentage
+#: includes/class-guichet-admin.php:189
+#, php-format
+msgid "%s %% of the daily cap"
+msgstr ""
+
+#: includes/class-guichet-admin.php:191
+#: includes/class-guichet-admin.php:360
+#: includes/class-guichet-admin.php:396
+#: includes/class-guichet-admin.php:401
+#: includes/class-guichet-admin.php:403
+msgid "Copy"
+msgstr ""
+
+#: includes/class-guichet-admin.php:195
+msgid "Open: an engine connected in the last minute. Closed: nobody at the guichet, asking is turned off on the site."
+msgstr ""
+
+#. translators: %s: the guichet's name
+#: includes/class-guichet-admin.php:215
+#, php-format
+msgid "Edit the guichet “%s”"
+msgstr ""
+
+#: includes/class-guichet-admin.php:217
+msgid "← All guichets"
+msgstr ""
+
+#: includes/class-guichet-admin.php:219
+#: includes/class-guichet-admin.php:241
+msgid "General"
+msgstr ""
+
+#: includes/class-guichet-admin.php:220
+#: includes/class-guichet-admin.php:263
+msgid "Access"
+msgstr ""
+
+#: includes/class-guichet-admin.php:221
+#: includes/class-guichet-admin.php:292
+msgid "Limits"
+msgstr ""
+
+#: includes/class-guichet-admin.php:222
+#: includes/class-guichet-admin.php:349
+msgid "Tokens"
+msgstr ""
+
+#: includes/class-guichet-admin.php:223
+#: includes/class-guichet-admin.php:391
+msgid "Integration"
+msgstr ""
+
+#: includes/class-guichet-admin.php:236
+#: includes/class-guichet-admin.php:430
+msgid "Save"
+msgstr ""
+
+#: includes/class-guichet-admin.php:243
+msgid "Shown at the top of the chat."
+msgstr ""
+
+#: includes/class-guichet-admin.php:245
+msgid "Identifier"
+msgstr ""
+
+#: includes/class-guichet-admin.php:247
+msgid "Used in the shortcode and the engine address: a-z, 0-9 and -. It cannot change later."
+msgstr ""
+
+#: includes/class-guichet-admin.php:247
+msgid "Used in the shortcode and the engine address."
+msgstr ""
+
+#: includes/class-guichet-admin.php:249
+msgid "Description"
+msgstr ""
+
+#: includes/class-guichet-admin.php:258
+msgid "Language"
+msgstr ""
+
+#: includes/class-guichet-admin.php:258
+msgid "Of the answers and of the guichet’s own lines (late answer, answer cut)."
+msgstr ""
+
+#: includes/class-guichet-admin.php:259
+msgid "Welcome message"
+msgstr ""
+
+#: includes/class-guichet-admin.php:259
+#: includes/class-guichet-front.php:142
+msgid "Ask your question…"
+msgstr ""
+
+#: includes/class-guichet-admin.php:259
+msgid "Shown in the empty question box."
+msgstr ""
+
+#: includes/class-guichet-admin.php:260
+msgid "Tone"
+msgstr ""
+
+#: includes/class-guichet-admin.php:260
+msgid "e.g. sober and warm"
+msgstr ""
+
+#: includes/class-guichet-admin.php:260
+msgid "Style of the answers, in free text. Empty: neutral and sober."
+msgstr ""
+
+#: includes/class-guichet-admin.php:263
+msgid "who may ask a question"
+msgstr ""
+
+#: includes/class-guichet-admin.php:265
+msgid "by default"
+msgstr ""
+
+#: includes/class-guichet-admin.php:267
+msgid "Roles allowed:"
+msgstr ""
+
+#: includes/class-guichet-admin.php:276
+msgid "anonymous visitors included"
+msgstr ""
+
+#: includes/class-guichet-admin.php:277
+msgid "Visitors are known by IP address + cookie. Keep the per-IP limits low."
+msgstr ""
+
+#: includes/class-guichet-admin.php:280
+msgid "To others"
+msgstr ""
+
+#: includes/class-guichet-admin.php:284
+msgid "Show “Sign in to ask a question”"
+msgstr ""
+
+#: includes/class-guichet-admin.php:286
+msgid "Show nothing"
+msgstr ""
+
+#: includes/class-guichet-admin.php:292
+msgid "empty = no limit"
+msgstr ""
+
+#: includes/class-guichet-admin.php:293
+msgid "Limit"
+msgstr ""
+
+#: includes/class-guichet-admin.php:293
+msgid "Window"
+msgstr ""
+
+#: includes/class-guichet-admin.php:293
+msgid "Per IP"
+msgstr ""
+
+#: includes/class-guichet-admin.php:293
+msgid "Per account"
+msgstr ""
+
+#: includes/class-guichet-admin.php:293
+msgid "Whole guichet"
+msgstr ""
+
+#: includes/class-guichet-admin.php:300
+msgid "+ Add a limit"
+msgstr ""
+
+#: includes/class-guichet-admin.php:303
+msgid "Question size"
+msgstr ""
+
+#: includes/class-guichet-admin.php:303
+#: includes/class-guichet-admin.php:304
+msgid "characters at most"
+msgstr ""
+
+#: includes/class-guichet-admin.php:304
+msgid "Answer size"
+msgstr ""
+
+#: includes/class-guichet-admin.php:304
+msgid "Beyond, the answer is cut and says so."
+msgstr ""
+
+#: includes/class-guichet-admin.php:305
+msgid "Answer timeout"
+msgstr ""
+
+#: includes/class-guichet-admin.php:305
+msgid "minutes"
+msgstr ""
+
+#: includes/class-guichet-admin.php:305
+msgid "One question at a time per person."
+msgstr ""
+
+#: includes/class-guichet-admin.php:315
+msgid "Keep a journal"
+msgstr ""
+
+#: includes/class-guichet-admin.php:316
+msgid "Keep the text of questions"
+msgstr ""
+
+#: includes/class-guichet-admin.php:317
+msgid "Otherwise: who, when, how long, answered or not."
+msgstr ""
+
+#: includes/class-guichet-admin.php:319
+msgid "See the journal →"
+msgstr ""
+
+#: includes/class-guichet-admin.php:329
+msgid "Questions"
+msgstr ""
+
+#: includes/class-guichet-admin.php:331
+msgid "Total volume (characters)"
+msgstr ""
+
+#: includes/class-guichet-admin.php:337
+msgid "per hour"
+msgstr ""
+
+#: includes/class-guichet-admin.php:339
+msgid "per day"
+msgstr ""
+
+#: includes/class-guichet-admin.php:345
+msgid "Remove this limit"
+msgstr ""
+
+#: includes/class-guichet-admin.php:349
+msgid "one per connected engine"
+msgstr ""
+
+#. translators: %s: the token's label
+#: includes/class-guichet-admin.php:356
+#, php-format
+msgid "Token “%s” created."
+msgstr ""
+
+#: includes/class-guichet-admin.php:357
+msgid "Copy it now: it will not be shown again."
+msgstr ""
+
+#: includes/class-guichet-admin.php:364
+msgid "Label"
+msgstr ""
+
+#: includes/class-guichet-admin.php:364
+msgid "Created"
+msgstr ""
+
+#: includes/class-guichet-admin.php:364
+msgid "Last connection"
+msgstr ""
+
+#: includes/class-guichet-admin.php:364
+msgid "Engine"
+msgstr ""
+
+#: includes/class-guichet-admin.php:366
+msgid "No token yet: create one for each engine."
+msgstr ""
+
+#. translators: %s: a duration
+#: includes/class-guichet-admin.php:378
+#, php-format
+msgid "%s ago"
+msgstr ""
+
+#. translators: %s: a duration
+#: includes/class-guichet-admin.php:378
+msgid "never"
+msgstr ""
+
+#: includes/class-guichet-admin.php:381
+msgid "Revoked"
+msgstr ""
+
+#: includes/class-guichet-admin.php:382
+msgid "Revoke"
+msgstr ""
+
+#: includes/class-guichet-admin.php:386
+msgid "Token label"
+msgstr ""
+
+#: includes/class-guichet-admin.php:386
+msgid "New token"
+msgstr ""
+
+#: includes/class-guichet-admin.php:394
+msgid "a token from the Tokens tab"
+msgstr ""
+
+#: includes/class-guichet-admin.php:397
+msgid "Options:"
+msgstr ""
+
+#: includes/class-guichet-admin.php:398
+msgid "Block"
+msgstr ""
+
+#: includes/class-guichet-admin.php:398
+msgid "In the editor, add the “Guichet” block and pick this guichet in its list."
+msgstr ""
+
+#: includes/class-guichet-admin.php:399
+msgid "Connect an engine"
+msgstr ""
+
+#: includes/class-guichet-admin.php:399
+msgid "The engine connects to this site; the site never calls the engine."
+msgstr ""
+
+#: includes/class-guichet-admin.php:400
+msgid "Address of the guichet, to paste in Clavarium with a token:"
+msgstr ""
+
+#: includes/class-guichet-admin.php:402
+msgid "Or on the command line:"
+msgstr ""
+
+#: includes/class-guichet-admin.php:404
+msgid "The engine sends its token in Authorization and in X-Guichet-Token, for hosts (Apache + PHP-FPM, security plugins) that drop the first."
+msgstr ""
+
+#: includes/class-guichet-admin.php:417
+msgid "Waiting"
+msgstr ""
+
+#: includes/class-guichet-admin.php:418
+msgid "Late"
+msgstr ""
+
+#: includes/class-guichet-admin.php:419
+msgid "Active tokens"
+msgstr ""
+
+#. translators: %s: the guichet's name
+#: includes/class-guichet-admin.php:437
+#, php-format
+msgid "Journal of “%s”"
+msgstr ""
+
+#. translators: %s: the guichet's name
+#: includes/class-guichet-admin.php:437
+msgid "← The guichet"
+msgstr ""
+
+#: includes/class-guichet-admin.php:439
+msgid "The journal is off for this guichet (tick “Keep a journal” on its page)."
+msgstr ""
+
+#: includes/class-guichet-admin.php:442
+msgid "asked"
+msgstr ""
+
+#: includes/class-guichet-admin.php:443
+msgid "answered"
+msgstr ""
+
+#: includes/class-guichet-admin.php:444
+msgid "not answered in time"
+msgstr ""
+
+#: includes/class-guichet-admin.php:445
+msgid "refused: limit"
+msgstr ""
+
+#: includes/class-guichet-admin.php:447
+msgid "When"
+msgstr ""
+
+#: includes/class-guichet-admin.php:447
+msgid "Who"
+msgstr ""
+
+#: includes/class-guichet-admin.php:447
+msgid "What"
+msgstr ""
+
+#: includes/class-guichet-admin.php:447
+msgid "How long"
+msgstr ""
+
+#: includes/class-guichet-admin.php:447
+msgid "Question"
+msgstr ""
+
+#: includes/class-guichet-admin.php:450
+msgid "Nothing yet."
+msgstr ""
+
+#: includes/class-guichet-admin.php:495
+msgid "engine"
+msgstr ""
+
+#: includes/class-guichet-front.php:50
+msgid "Choose a guichet"
+msgstr ""
+
+#: includes/class-guichet-front.php:51
+msgid "No guichet yet: add one in Settings › Guichet."
+msgstr ""
+
+#: includes/class-guichet-front.php:52
+msgid "Height (pixels)"
+msgstr ""
+
+#: includes/class-guichet-front.php:53
+msgid "Show the title bar"
+msgstr ""
+
+#: includes/class-guichet-front.php:54
+msgid "The chat of a guichet, as visitors see it."
+msgstr ""
+
+#. translators: %s: the guichet id given to the shortcode or block
+#: includes/class-guichet-front.php:84
+#, php-format
+msgid "Guichet: no guichet \"%s\"."
+msgstr ""
+
+#: includes/class-guichet-front.php:95
+#: includes/class-guichet-front.php:163
+#: includes/class-guichet-rest.php:59
+msgid "Sign in to ask a question."
+msgstr ""
+
+#: includes/class-guichet-front.php:96
+#: includes/class-guichet-rest.php:60
+msgid "This guichet is not open to your account."
+msgstr ""
+
+#: includes/class-guichet-front.php:118
+msgid "One question at a time"
+msgstr ""
+
+#. translators: %s: the guichet's name
+#: includes/class-guichet-front.php:144
+#, php-format
+msgid "%s is away for the moment. Come back a little later: your earlier messages stay here."
+msgstr ""
+
+#: includes/class-guichet-front.php:145
+msgid "The guichet is closed"
+msgstr ""
+
+#: includes/class-guichet-front.php:146
+msgid "Limit reached"
+msgstr ""
+
+#. translators: 1: how many questions were asked
+#: includes/class-guichet-front.php:148
+#, php-format
+msgid "You have asked %1$s questions this hour."
+msgstr ""
+
+#. translators: 1: how many questions were asked
+#: includes/class-guichet-front.php:150
+#, php-format
+msgid "You have asked %1$s questions today."
+msgstr ""
+
+#: includes/class-guichet-front.php:151
+msgid "You have reached the amount of text allowed for now."
+msgstr ""
+
+#: includes/class-guichet-front.php:152
+msgid "This guichet has taken all the questions it can for now."
+msgstr ""
+
+#. translators: 1: a time, such as 15:00
+#: includes/class-guichet-front.php:154
+#, php-format
+msgid "Next question possible at %1$s."
+msgstr ""
+
+#. translators: 1: questions asked, 2: the most allowed
+#: includes/class-guichet-front.php:156
+#, php-format
+msgid "%1$s / %2$s this hour"
+msgstr ""
+
+#. translators: 1: questions asked, 2: the most allowed
+#: includes/class-guichet-front.php:158
+#, php-format
+msgid "%1$s / %2$s today"
+msgstr ""
+
+#: includes/class-guichet-front.php:159
+msgid "One question at a time: wait for the answer."
+msgstr ""
+
+#. translators: 1: the most characters in a question
+#: includes/class-guichet-front.php:161
+#, php-format
+msgid "%1$s characters at most."
+msgstr ""
+
+#: includes/class-guichet-front.php:162
+msgid "The guichet is closed for the moment."
+msgstr ""
+
+#. translators: %s: the start of an anonymous visitor's random id
+#: includes/class-guichet-plugin.php:138
+#, php-format
+msgid "visitor %s"
+msgstr ""
+
+#: includes/class-guichet-rest.php:52
+msgid "No such guichet."
+msgstr ""

@@ -1,0 +1,15 @@
+{
+  "name": "guichet-repo",
+  "private": true,
+  "description": "The Guichet: an AI that answers from its documents and can do nothing else -- engine, relays, WordPress plugin.",
+  "type": "module",
+  "scripts": {
+    "test": "cd engine && node --test test/*.test.mjs && cd ../relay-node && node --test test/*.test.mjs && cd ../relay-php && node --test test/*.test.mjs && cd ../wordpress && sh tests/run.sh",
+    "check": "npm run check:hooks && npm run check:shapes && npm run check:names && npm run check:shell && npm test",
+    "check:shapes": "node tools/check-shapes.mjs",
+    "check:names": "node tools/check-ai-names.mjs",
+    "check:shell": "node tools/check-shell.mjs",
+    "check:hooks": "node tools/check-hooks.mjs"
+  },
+  "license": "MIT"
+}

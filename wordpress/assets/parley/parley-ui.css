@@ -1,0 +1,832 @@
+/* How the exchange looks. Every colour is a variable: a page sets them, or keeps these. */
+.parley {
+  --parley-bg: #ffffff; --parley-text: #16181d; --parley-dim: #5a5f69; --parley-line: #d3d7de;
+  --parley-agent: #f3f4f6; --parley-person: #e3edfd; --parley-ask: #8a5d00; --parley-action: #0b53c0; --parley-on-action: #ffffff; --parley-live: #c62828;
+  --parley-font: 1rem; --parley-gap: .7rem; --parley-column: 72rem; --parley-measure: 80ch;
+  /* Reactions: meaning, never decoration; stop is red, readable in both themes. */
+  --parley-react-stop: #c62828; --parley-react-go: #1d7a3a; --parley-react-love: #c2185b; --parley-arrive: color-mix(in srgb, var(--parley-action) 14%, transparent);
+  /* Meaning, never decoration: notes, tips, what matters, warnings, dangers; and code. */
+  --parley-note: #0b5cad; --parley-tip: #1d7a3a; --parley-important: #6b3fb8; --parley-warning: #8a5d00; --parley-caution: #b3261e; --parley-mark: #fff1a8; --parley-code-bg: #f5f6f8;
+  --parley-tok-comment: #6a737d; --parley-tok-keyword: #a1267d; --parley-tok-string: #116329; --parley-tok-number: #8a4b00; --parley-tok-function: #5a32a3; --parley-tok-tag: #0b5cad; --parley-tok-attr: #8a4b00; --parley-tok-deleted: #b3261e; --parley-tok-inserted: #116329;
+  container: parley / inline-size;
+  display: flex; flex-direction: column; gap: var(--parley-gap); color: var(--parley-text); background: var(--parley-bg); font-size: var(--parley-font); line-height: 1.45; min-height: 0;
+}
+@media (prefers-color-scheme: dark) {
+  .parley:not([data-theme="light"]) { --parley-bg: #0f1115; --parley-text: #e6e8ec; --parley-dim: #a3a9b4; --parley-line: #38404c; --parley-agent: #1a1e25; --parley-person: #172742; --parley-ask: #e0b45a; --parley-action: #8ab4ff; --parley-on-action: #0f1115; --parley-live: #ff7a7a;
+  --parley-note: #79b8ff; --parley-tip: #6fdc8c; --parley-important: #c5a3ff; --parley-warning: #e0b45a; --parley-caution: #ff8a80; --parley-mark: #5c4b00; --parley-code-bg: #161a20;
+  --parley-tok-comment: #8b949e; --parley-tok-keyword: #ff7ac6; --parley-tok-string: #a5e3a1; --parley-tok-number: #ffb86b; --parley-tok-function: #d2a8ff; --parley-tok-tag: #79b8ff; --parley-tok-attr: #ffb86b; --parley-tok-deleted: #ff8a80; --parley-tok-inserted: #a5e3a1;
+  --parley-react-stop: #ff6b6b; --parley-react-go: #6fdc8c; --parley-react-love: #ff7aa8; }
+}
+.parley[data-theme="dark"] { --parley-bg: #0f1115; --parley-text: #e6e8ec; --parley-dim: #a3a9b4; --parley-line: #38404c; --parley-agent: #1a1e25; --parley-person: #172742; --parley-ask: #e0b45a; --parley-action: #8ab4ff; --parley-on-action: #0f1115; --parley-live: #ff7a7a;
+  --parley-note: #79b8ff; --parley-tip: #6fdc8c; --parley-important: #c5a3ff; --parley-warning: #e0b45a; --parley-caution: #ff8a80; --parley-mark: #5c4b00; --parley-code-bg: #161a20;
+  --parley-tok-comment: #8b949e; --parley-tok-keyword: #ff7ac6; --parley-tok-string: #a5e3a1; --parley-tok-number: #ffb86b; --parley-tok-function: #d2a8ff; --parley-tok-tag: #79b8ff; --parley-tok-attr: #ffb86b; --parley-tok-deleted: #ff8a80; --parley-tok-inserted: #a5e3a1;
+  --parley-react-stop: #ff6b6b; --parley-react-go: #6fdc8c; --parley-react-love: #ff7aa8; }
+.parley p, .parley h3, .parley ol, .parley ul { margin: 0; }
+.parley-top { display: flex; align-items: center; justify-content: space-between; gap: .6em; flex-wrap: wrap; }
+.parley-top { flex-wrap: nowrap; }
+.parley-status { flex: 1; font-weight: 600; color: var(--parley-dim); min-width: 0; overflow: hidden; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow-wrap: anywhere; }
+.parley-status[hidden] { display: none; }
+.parley-status[data-state="waiting"] { color: var(--parley-ask); }
+.parley-status::before { content: ""; display: inline-block; width: .6em; height: .6em; border-radius: 50%; margin-right: .45em; background: var(--parley-dim); vertical-align: .05em; }
+.parley-status[data-state="working"]::before { background: var(--parley-action); }
+.parley-status[data-state="waiting"]::before { background: var(--parley-ask); }
+.parley-status[data-state="done"]::before { background: #2f8f4e; }
+.parley-views { display: flex; border: 1px solid var(--parley-line); border-radius: 999px; padding: 2px; margin-bottom: .35em; }
+.parley .parley-views button { flex: 1; }
+.parley .parley-views button { border: 0; border-radius: 999px; min-height: 2.1em; padding: 0 .9em; background: transparent; color: var(--parley-dim); }
+.parley .parley-views button[aria-pressed="true"] { background: var(--parley-agent); color: var(--parley-text); font-weight: 600; }
+.parley-main { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: var(--parley-gap); }
+.parley-column { flex: 1; min-height: 0; min-width: 0; position: relative; display: flex; flex-direction: column; }
+.parley-thread { flex: 1; min-height: 0; overflow: auto; display: flex; flex-direction: column; gap: var(--parley-gap); padding: 10px 2px 2rem; scroll-padding-bottom: 2rem;
+  /* What scrolls away fades at the top edge instead of being cut there. */
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 14px); mask-image: linear-gradient(to bottom, transparent 0, #000 14px); }
+/* A reading column: every row of the thread, centred, as wide as reading allows. */
+.parley-row { width: 100%; max-width: var(--parley-column); margin-inline: auto; box-sizing: border-box; display: flex; flex-direction: column; gap: .3em; min-width: 0; }
+/* The agent's message: across the column, no narrow bubble, so that tables, code and drawings breathe. */
+.parley-said { align-self: stretch; min-width: 0; padding: .2em .1em; }
+/* The person's: a bubble on the right. */
+.parley-said[data-from="person"] { align-self: flex-end; max-width: min(36em, 85%); border-radius: 14px 14px 4px 14px; padding: .55em .8em; background: var(--parley-person); }
+.parley-who { display: flex; align-items: baseline; gap: .6em; font-size: .8em; color: var(--parley-dim); margin-bottom: .15em; }
+.parley-who .parley-name { font-weight: 650; color: var(--parley-text); }
+.parley-who-person { font-size: .8em; color: var(--parley-dim); font-weight: 600; text-align: right; margin-bottom: .1em; }
+.parley-row[data-from="person"] { align-items: flex-end; }
+/* An open question: outlined, whether the steps that led to it are folded or not. */
+.parley-said[data-asking="true"] { box-shadow: inset 0 0 0 2px var(--parley-ask); }
+.parley-text { white-space: pre-wrap; overflow-wrap: anywhere; }
+.parley-label { font-size: .85em; font-weight: 650; color: var(--parley-ask); }
+.parley-file { display: flex; align-items: center; gap: .6em; flex-wrap: wrap; margin-top: .35em; }
+.parley-path { font-size: .85em; color: var(--parley-dim); overflow-wrap: anywhere; }
+.parley-outside { margin-top: .3em; font-size: .9em; color: var(--parley-ask); overflow-wrap: anywhere; }
+.parley-foot { margin-top: .25em; font-size: .8em; color: var(--parley-dim); }
+.parley-choices { display: flex; flex-wrap: wrap; gap: .45em; margin-top: .55em; }
+.parley button { font: inherit; min-height: 2.6em; padding: 0 1em; border-radius: 10px; border: 1px solid var(--parley-line); background: var(--parley-bg); color: var(--parley-text); cursor: pointer; }
+.parley .parley-choices button { border: 1px solid var(--parley-action); background: transparent; color: var(--parley-text); border-radius: 999px; min-height: 2.6em; padding: 0 1.1em; font-weight: 600; }
+.parley .parley-choices button:hover:not(:disabled) { background: color-mix(in srgb, var(--parley-action) 12%, var(--parley-bg)); }
+.parley .parley-remind { min-height: 2em; padding: 0 .7em; font-size: inherit; }
+.parley button:disabled { opacity: .5; cursor: default; }
+.parley button:focus-visible, .parley-box:focus-visible { outline: 2px solid var(--parley-action); outline-offset: 2px; }
+.parley-aside { display: flex; flex-direction: column; gap: var(--parley-gap); max-height: 45%; overflow: auto; order: -1; flex: none; border: 1px solid var(--parley-line); border-radius: 12px; padding: .5em .8em; }
+.parley-aside[hidden] { display: none; }
+.parley-aside h3 { font-size: .8em; text-transform: uppercase; letter-spacing: .06em; color: var(--parley-dim); margin-bottom: .3em; }
+.parley-aside ul { padding-left: 1.1em; display: flex; flex-direction: column; gap: .25em; }
+.parley-fold summary { cursor: pointer; font-weight: 600; color: var(--parley-dim); }
+.parley-fold[open] { display: flex; flex-direction: column; gap: var(--parley-gap); }
+.parley-aside li { overflow-wrap: anywhere; }
+.parley-aside li .parley-path { display: block; }
+.parley-aside li[data-outside="true"] .parley-path { color: var(--parley-ask); }
+.parley-name { font-weight: 600; }
+.parley .parley-open { min-height: 2.1em; padding: 0 .8em; }
+.parley .parley-terminal { align-self: flex-start; }
+/* Narrow: the files folded and the way to the terminal, on one line. */
+.parley-aside[data-narrow="true"] { flex-direction: row; flex-wrap: wrap; align-items: center; padding: .35em .6em; }
+.parley-aside[data-narrow="true"] .parley-fold { flex: 1; min-width: 8em; }
+.parley-aside[data-narrow="true"] .parley-terminal { min-height: 2.2em; }
+@container parley (min-width: 46rem) {
+  .parley[data-view="detailed"] .parley-main { flex-direction: row; }
+  .parley-aside { order: 0; width: 18rem; flex: none; max-height: none; }
+}
+.parley-form { position: relative; display: flex; flex-wrap: wrap; align-items: flex-end; gap: 4px; padding: 5px; border: 1px solid var(--parley-line); border-radius: 24px; background: var(--parley-bg); transition: border-color .15s, box-shadow .15s; }
+/* One frame for the box and its buttons, as an online chat has: it shows the focus, and dictation in red. */
+.parley-form:focus-within { border-color: color-mix(in srgb, var(--parley-action) 55%, var(--parley-line)); box-shadow: 0 0 0 3px color-mix(in srgb, var(--parley-action) 14%, transparent); }
+.parley-form[data-voice="listening"], .parley-form[data-voice="calibrating"], .parley-form[data-voice="transcribing"] { border-color: color-mix(in srgb, var(--parley-live) 45%, var(--parley-line)); }
+.parley-form[data-voice="hearing"] { border-color: var(--parley-live); }
+/* Its border unseen (the frame is the form's) but kept, so that the box and its measured copy keep one height; up to seven lines, then it scrolls. */
+.parley-box { --parley-btn: 40px; flex: 1; min-width: 0; box-sizing: border-box; font: inherit; line-height: 1.4; padding: calc((var(--parley-btn) - 1.4em) / 2 - 1px) .25em; min-height: var(--parley-btn); max-height: calc(10.2em + 2px); overflow-y: auto; border-radius: 0; border: 1px solid transparent; background: transparent; color: var(--parley-text); resize: none; field-sizing: content; }
+.parley-form .parley-box:focus-visible { outline: none; }
+/* Round buttons of one size, a sign each, against the last line: they never grow with the text. */
+.parley .parley-attach, .parley .parley-mic, .parley .parley-send { flex: none; align-self: flex-end; width: 40px; height: 40px; min-width: 0; min-height: 0; padding: 0; border: 0; border-radius: 50%; display: inline-grid; place-items: center; background: transparent; color: var(--parley-dim); }
+.parley .parley-attach:hover:not(:disabled), .parley .parley-mic:hover:not([aria-pressed="true"]) { background: var(--parley-agent); color: var(--parley-text); }
+.parley-form .parley-sign { width: 22px; height: 22px; }
+.parley .parley-send { background: var(--parley-action); color: var(--parley-on-action); }
+.parley .parley-send .parley-sign { stroke-width: 2.4; }
+.parley .parley-send:disabled { opacity: 1; background: var(--parley-agent); color: color-mix(in srgb, var(--parley-dim) 70%, transparent); }
+@media (pointer: coarse) { .parley .parley-attach, .parley .parley-mic, .parley .parley-send { width: 44px; height: 44px; } .parley-form .parley-sign { width: 24px; height: 24px; } .parley-form { border-radius: 26px; } .parley-box, .parley-box-mirror { --parley-btn: 44px; } }
+/* Where the browser cannot size the box by its content: a hidden copy of it, with its text and width, measured instead of the box. */
+.parley-box-mirror { --parley-btn: 40px; position: absolute; top: 0; left: 0; visibility: hidden; pointer-events: none; box-sizing: border-box; font: inherit; line-height: 1.4; padding: calc((var(--parley-btn) - 1.4em) / 2 - 1px) .25em; border: 1px solid transparent; height: 0; min-height: 0; max-height: none; overflow: hidden; resize: none; }
+.parley-count { align-self: flex-end; margin: -.1em .3em .1em 0; font-size: .72em; color: var(--parley-dim); font-variant-numeric: tabular-nums; }
+.parley-count[data-level="mid"] { color: var(--parley-warning); }
+.parley-count[data-level="high"] { color: var(--parley-caution); font-weight: 600; }
+.parley .parley-send { background: var(--parley-action); border-color: var(--parley-action); color: var(--parley-on-action); font-weight: 650; }
+.parley-empty { color: var(--parley-dim); }
+.parley-problem { color: var(--parley-ask); }
+
+/* ---- times, as a chat shows them ---- */
+.parley-said { position: relative; }
+.parley-time { font-size: .75em; color: var(--parley-dim); white-space: nowrap; font-variant-numeric: tabular-nums; }
+/* Simple: the time on hover or after a long press; it takes no room. The agent's beside its name; the person's beside the bubble. */
+.parley[data-view="simple"] .parley-said[data-from="person"] { max-width: min(36em, calc(100% - 4.8em)); }
+.parley[data-view="simple"] .parley-said > .parley-time { white-space: normal; width: max-content; max-width: 4.6em; position: absolute; bottom: .2em; right: calc(100% + .5em); opacity: 0; transition: opacity .15s; pointer-events: none; }
+.parley[data-view="simple"] .parley-who .parley-time { opacity: 0; transition: opacity .15s; }
+.parley[data-view="simple"] .parley-said:hover .parley-time, .parley[data-view="simple"] .parley-said[data-reveal="true"] .parley-time { opacity: 1; }
+/* Detailed: in the bubble, always. */
+.parley[data-view="detailed"] .parley-said > .parley-time { display: block; text-align: right; margin-top: .15em; }
+.parley-said[data-asking="true"] { border-radius: 12px; padding: .55em .8em; }
+.parley-divider { align-self: center; text-align: center; font-size: .8em; color: var(--parley-dim); }
+.parley-divider span { display: inline-block; padding: .15em .8em; border-radius: 999px; background: var(--parley-agent); }
+.parley-divider[data-kind="gap"] span { background: transparent; }
+
+/* ---- the steps between two messages, and what it does now ---- */
+.parley-steps, .parley-now, .parley-group { display: flex; flex-direction: column; gap: .3em; align-self: stretch; }
+.parley .parley-chip { align-self: flex-start; min-height: 1.9em; padding: 0 .8em; border-radius: 999px; font-size: .8em; color: var(--parley-dim); border-color: var(--parley-line); background: transparent; }
+.parley .parley-chip::after { content: ""; display: inline-block; width: .4em; height: .4em; margin-left: .5em; border: solid currentColor; border-width: 0 1.5px 1.5px 0; transform: translateY(-.15em) rotate(45deg); }
+.parley .parley-chip[aria-expanded="true"]::after { transform: translateY(.05em) rotate(-135deg); }
+.parley-trail { max-width: 40em; list-style: none; padding: 0 0 0 .7em; margin: 0; border-left: 2px solid var(--parley-line); display: flex; flex-direction: column; gap: .2em; font-size: .9em; }
+.parley-trail[hidden] { display: none; }
+.parley-trail li { display: flex; gap: .6em; align-items: baseline; color: var(--parley-dim); }
+.parley-trail li .parley-step { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.parley-trail li[data-kind="status"] .parley-step { font-weight: 600; }
+.parley-trail li[data-state="waiting"] .parley-step { color: var(--parley-ask); }
+.parley-trail li[data-kind="status"][data-state="done"] .parley-step::before { content: "\2713  "; color: #2f8f4e; }
+.parley .parley-doing { display: flex; align-items: baseline; gap: .55em; width: 100%; min-height: 0; padding: .3em .1em; border: 0; border-radius: 8px; background: transparent; color: var(--parley-dim); font-style: italic; text-align: left; cursor: default; }
+.parley button.parley-doing { cursor: pointer; }
+.parley .parley-doing .parley-step { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.parley-more { align-self: center; flex: none; width: .45em; height: .45em; margin: 0 .3em; border: solid currentColor; border-width: 0 1.5px 1.5px 0; transform: rotate(-135deg); }
+.parley-now[data-open="false"] .parley-more { transform: translateY(-.15em) rotate(45deg); }
+.parley-unseen { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+/* Simple: the steps that led to a message are opened by a click on it. */
+.parley-said[data-steps="true"] { cursor: pointer; }
+.parley-said[data-steps="true"]:focus-visible { outline: 2px solid var(--parley-action); outline-offset: 2px; }
+/* Simple: the line alone, without its time. */
+.parley[data-view="simple"] .parley-doing .parley-time { display: none; }
+.parley-quiet { font-size: .8em; font-style: normal; white-space: nowrap; }
+.parley-dots { display: inline-flex; gap: .2em; align-self: center; }
+.parley-dots i { width: .38em; height: .38em; border-radius: 50%; background: var(--parley-action); opacity: .35; }
+.parley-now[data-live="true"] .parley-dots i { animation: parley-dot 1.2s infinite ease-in-out; }
+.parley-now[data-live="true"] .parley-dots i:nth-child(2) { animation-delay: .2s; }
+.parley-now[data-live="true"] .parley-dots i:nth-child(3) { animation-delay: .4s; }
+.parley-now[data-live="false"] .parley-dots i { background: var(--parley-dim); }
+@keyframes parley-dot { 0%, 80%, 100% { opacity: .25; transform: translateY(0); } 40% { opacity: 1; transform: translateY(-.18em); } }
+@media (prefers-reduced-motion: reduce) { .parley-now[data-live="true"] .parley-dots i { animation: none; opacity: .9; } }
+
+/* ---- the box's helpers: dictation, and the quick answers above it ---- */
+.parley .parley-mic[hidden] { display: none; }
+.parley-sign { width: 1.35em; height: 1.35em; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.parley-sign-stop { fill: currentColor; stroke: none; }
+.parley-mic .parley-sign-stop, .parley-mic[aria-pressed="true"] .parley-sign-mic { display: none; }
+.parley-mic[aria-pressed="true"] .parley-sign-stop { display: block; }
+/* Listening: a red disc with the square that stops it; a ring pulses while a voice is heard. */
+.parley .parley-mic[aria-pressed="true"] { background: var(--parley-live); color: var(--parley-on-action); }
+.parley-mic[aria-pressed="true"] .parley-sign-stop { width: 16px; height: 16px; }
+.parley-mic[data-state="hearing"]::after { content: ""; position: absolute; inset: 0; border-radius: 50%; animation: parley-ring 1.2s infinite ease-out; pointer-events: none; }
+@keyframes parley-ring { from { box-shadow: 0 0 0 0 color-mix(in srgb, var(--parley-live) 45%, transparent); } to { box-shadow: 0 0 0 9px transparent; } }
+@media (prefers-reduced-motion: reduce) { .parley-mic[data-state="hearing"]::after { animation: none; box-shadow: 0 0 0 3px color-mix(in srgb, var(--parley-live) 35%, transparent); } }
+/* "Send when I stop" is on: a dot on the microphone. */
+.parley .parley-mic { position: relative; }
+.parley-mic-auto { display: none; position: absolute; top: 3px; right: 3px; width: 8px; height: 8px; border-radius: 50%; background: var(--parley-action); box-shadow: 0 0 0 2px var(--parley-bg); }
+.parley-mic[data-auto="true"] .parley-mic-auto { display: block; }
+/* The box and, on its frame, what the microphone does: over the page, taking
+   no room, so that nothing moves when dictation starts, changes or stops. */
+/* Its one line of text on the line of the buttons: the box is their height, and grows upward from there. */
+.parley-field { flex: 1; min-width: 0; display: flex; align-self: flex-end; }
+.parley-field .parley-box { width: 100%; }
+.parley-voice { position: absolute; left: 14px; bottom: calc(100% - .55em); z-index: 1; max-width: calc(100% - 1.2em); box-sizing: border-box; padding: .1em .6em; border: 1px solid var(--parley-line); border-radius: .8em; background: var(--parley-bg); color: var(--parley-dim); font-size: .78em; line-height: 1.3; pointer-events: none; overflow-wrap: anywhere; }
+.parley-voice[hidden] { display: none; }
+.parley-voice-text::before { content: ""; display: inline-block; width: .6em; height: .6em; border-radius: 50%; margin-right: .45em; background: #2f8f4e; vertical-align: .02em; }
+.parley-voice[data-state="hearing"] .parley-voice-text::before { background: var(--parley-live); }
+.parley-voice[data-state="transcribing"] .parley-voice-text::before, .parley-voice[data-state="calibrating"] .parley-voice-text::before { background: var(--parley-ask); }
+.parley-voice[data-state="error"] { color: var(--parley-ask); border-color: var(--parley-ask); }
+.parley-voice[data-state="error"] .parley-voice-text::before { background: var(--parley-ask); }
+.parley-voice-said { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+/* The choices of this device, beside the view: a menu over the page. */
+.parley-prefs { position: relative; flex: none; margin-left: auto; }
+.parley-prefs[hidden] { display: none; }
+.parley .parley-prefs-open { min-height: 2.1em; min-width: 2.4em; padding: 0 .5em; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; color: var(--parley-dim); background: transparent; }
+.parley .parley-prefs-open[aria-expanded="true"] { color: var(--parley-text); background: var(--parley-agent); }
+.parley-prefs-menu { position: absolute; right: 0; top: calc(100% + .35em); z-index: 3; width: max-content; max-width: min(22em, calc(100vw - 2em)); padding: .45em; border: 1px solid var(--parley-line); border-radius: 12px; background: var(--parley-bg); box-shadow: 0 6px 24px rgba(0, 0, 0, .18); }
+.parley-prefs-menu[hidden] { display: none; }
+.parley .parley-auto { min-height: 2.5em; padding: .35em .9em; border-radius: 999px; font-size: .95em; color: var(--parley-text); border-color: transparent; background: transparent; text-align: left; line-height: 1.3; }
+/* A switch: on, what is said is sent by itself. */
+.parley .parley-auto { position: relative; padding-left: 3.4em; }
+.parley .parley-auto::before { content: ""; position: absolute; left: .7em; top: 50%; width: 2.1em; height: 1.2em; margin-top: -.6em; border-radius: 999px; background: var(--parley-line); transition: background .15s; }
+.parley .parley-auto::after { content: ""; position: absolute; left: .85em; top: 50%; width: .9em; height: .9em; margin-top: -.45em; border-radius: 50%; background: var(--parley-bg); transition: transform .15s; }
+.parley .parley-auto[aria-pressed="true"]::before { background: var(--parley-action); }
+.parley .parley-auto[aria-pressed="true"]::after { transform: translateX(.9em); }
+.parley-quick { display: flex; align-items: flex-start; gap: .4em; margin-bottom: calc(var(--parley-gap) * -.4); }
+.parley-quick[hidden], .parley-quick[data-empty="true"] { display: none; }
+.parley-quick[data-choices="seen"] .parley-answer { display: none; }
+.parley-replies { flex: 1; min-width: 0; display: flex; flex-wrap: wrap; gap: .4em; overflow: hidden; padding: 2px; }
+.parley-quick[data-open="true"] .parley-replies { max-height: 40vh; overflow-y: auto; }
+.parley .parley-replies button, .parley .parley-replies-more { min-height: 2.3em; padding: 0 .9em; border-radius: 999px; font-size: .9em; white-space: nowrap; max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
+.parley .parley-replies .parley-answer { border-color: var(--parley-action); background: var(--parley-action); color: var(--parley-on-action); font-weight: 650; }
+.parley .parley-replies .parley-reply[data-send="false"] { border-style: dashed; }
+.parley .parley-replies-more { flex: none; margin: 2px; color: var(--parley-dim); background: transparent; }
+.parley .parley-replies-more[hidden] { display: none; }
+
+/* ---- lines of the application: what happened around the agent ---- */
+.parley-system { align-self: stretch; display: flex; flex-wrap: wrap; align-items: baseline; justify-content: center; gap: .3em .7em; padding: .45em .8em; margin: .1em 0; border-top: 1px solid var(--parley-line); border-bottom: 1px solid var(--parley-line); color: var(--parley-dim); font-size: .9em; text-align: center; }
+.parley-system-text { flex: 0 1 auto; min-width: 0; overflow-wrap: anywhere; }
+.parley-system[data-level="warn"] .parley-system-text::before, .parley-system[data-level="bad"] .parley-system-text::before { content: ""; display: inline-block; width: .55em; height: .55em; border-radius: 50%; margin-right: .45em; background: var(--parley-ask); vertical-align: .05em; }
+.parley-system[data-level="bad"] .parley-system-text::before { background: var(--parley-live); }
+.parley-system-actions { flex-basis: 100%; display: flex; flex-wrap: wrap; justify-content: center; gap: .4em; }
+.parley .parley-act { min-height: 2.2em; padding: 0 .85em; border-radius: 999px; font-size: .95em; color: var(--parley-text); }
+.parley .parley-act:first-child { border-color: var(--parley-action); color: var(--parley-action); font-weight: 650; }
+
+/* ---- files the person attaches ---- */
+.parley .parley-attach[hidden] { display: none; }
+.parley-attached { flex-basis: 100%; display: flex; flex-wrap: wrap; gap: .4em; padding: 3px 3px 2px; }
+.parley-attached[hidden] { display: none; }
+.parley-pending { display: inline-flex; align-items: center; gap: .2em; max-width: 100%; padding: 0 0 0 .8em; border: 1px solid var(--parley-line); border-radius: 999px; background: var(--parley-person); font-size: .9em; }
+.parley-pending .parley-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; font-weight: 600; }
+.parley .parley-unattach { min-height: 2.1em; min-width: 2.3em; padding: 0; border: 0; border-radius: 999px; background: transparent; color: var(--parley-dim); font-size: 1.1em; }
+.parley-file[data-attached="true"] .parley-name::before { content: "\1F4CE  "; }
+.parley-problem[data-kind="sending"] { color: var(--parley-dim); }
+/* A file of the person: its name cut short before its Open button is pushed below it. */
+.parley-file[data-attached="true"] { flex-wrap: nowrap; }
+.parley-file[data-attached="true"] .parley-name { flex: 0 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.parley-file[data-attached="true"] .parley-card { flex: 0 1 auto; min-width: 0; }
+.parley-size { flex: none; font-size: .8em; color: var(--parley-dim); white-space: nowrap; }
+.parley-pending .parley-size { margin-left: .4em; }
+.parley-where { flex-basis: 100%; font-size: .8em; color: var(--parley-dim); }
+
+/* ---- what the agent wrote, rendered ---- */
+.parley-md { overflow-wrap: anywhere; min-width: 0; }
+.parley .parley-md > * + *, .parley .parley-md li > * + *, .parley .parley-callout > * + * { margin-top: .6em; }
+.parley-md p, .parley-md ul, .parley-md ol { margin: 0; }
+.parley-md ul, .parley-md ol { padding-left: 1.4em; }
+.parley-md li + li { margin-top: .2em; }
+.parley-md .parley-task { list-style: none; margin-left: -1.3em; }
+.parley-check { display: inline-block; width: 1.3em; color: var(--parley-dim); }
+.parley-check[data-done="true"] { color: var(--parley-tip); }
+.parley-h { margin: .2em 0 0; line-height: 1.3; font-weight: 700; }
+.parley-h1 { font-size: 1.3em; } .parley-h2 { font-size: 1.18em; } .parley-h3 { font-size: 1.06em; } .parley-h4, .parley-h5, .parley-h6 { font-size: 1em; }
+.parley-md hr { border: 0; border-top: 1px solid var(--parley-line); margin: .8em 0; }
+.parley-md blockquote { margin: 0; padding: .1em 0 .1em .9em; border-left: 3px solid var(--parley-line); color: var(--parley-dim); }
+.parley-md code, .parley-pathlink code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .9em; padding: .05em .3em; border-radius: 4px; background: var(--parley-code-bg); border: 1px solid var(--parley-line); }
+.parley-md mark { background: var(--parley-mark); color: inherit; border-radius: 3px; padding: 0 .15em; }
+.parley-md a.parley-link { color: var(--parley-action); text-decoration: underline; text-underline-offset: 2px; }
+.parley .parley-pathlink { display: inline; min-height: 0; padding: 0; border: 0; border-radius: 0; background: none; color: var(--parley-action); text-decoration: underline; text-underline-offset: 3px; font: inherit; cursor: pointer; overflow-wrap: anywhere; text-align: left; }
+.parley-short { font-weight: 650; }
+.parley-said[data-from="agent"] .parley-short + .parley-md { margin-top: .5em; }
+/* Folded after about twelve lines: what is below fades. */
+.parley-md[data-clip="true"] { max-height: calc(1.45em * 12); overflow: hidden; -webkit-mask-image: linear-gradient(to bottom, #000 70%, transparent); mask-image: linear-gradient(to bottom, #000 70%, transparent); }
+.parley .parley-unfold { min-height: 2.6em; margin-top: .45em; padding: 0 1.1em; border-radius: 999px; font-size: .95em; font-weight: 600; color: var(--parley-text); border-color: var(--parley-line); background: var(--parley-agent); }
+.parley-md + .parley-md { margin-top: .5em; }
+/* Badges: a word with its meaning, in its colour, readable in both themes. */
+.parley-badge { display: inline-block; padding: 0 .5em; border-radius: 999px; font-size: .8em; font-weight: 650; line-height: 1.5; vertical-align: .05em; border: 1px solid currentColor; white-space: nowrap; }
+.parley-badge[data-kind="ok"] { color: var(--parley-tip); }
+.parley-badge[data-kind="todo"] { color: var(--parley-note); }
+.parley-badge[data-kind="blocked"] { color: var(--parley-caution); }
+.parley-badge[data-kind="warn"] { color: var(--parley-warning); }
+/* A secret lifted out of a message: stars, never the value (secret-scan.mjs host-side). */
+.parley-secret { display: inline-flex; align-items: center; gap: .4em; vertical-align: .05em; padding: 0 .45em 0 .55em; border: 1px solid var(--parley-line); border-radius: 7px; white-space: nowrap; }
+.parley-secret-dots { color: var(--parley-action); font-weight: 700; letter-spacing: .14em; }
+.parley-secret-label { font-size: .78em; color: var(--parley-dim); }
+.parley-secret-forget { all: unset; cursor: pointer; display: inline-grid; place-items: center; width: 1.35em; height: 1.35em; border-radius: 5px; color: var(--parley-dim); line-height: 1; }
+.parley-secret-forget:hover, .parley-secret-forget:focus-visible { background: color-mix(in srgb, var(--parley-caution) 22%, transparent); color: var(--parley-caution); outline: none; }
+.parley-secret-forget .parley-sign { width: .95em; height: .95em; }
+/* #87: the slow "folding soon" countdown bar under a message on its way out. */
+/* #115: the countdown bar has the shape and the place of the button the message folds into
+   ("See the detail"): a pill under the text, so the fold reads as one gesture; its fill clear. */
+.parley-fold { position: relative; overflow: hidden; display: inline-flex; align-items: center; min-height: 2.6em; min-width: 14em; margin-top: .45em; padding: 0 1.1em;
+  border: 1px solid var(--parley-line); border-radius: 999px; background: var(--parley-agent); color: var(--parley-text); font: 600 .95em inherit; text-align: left; cursor: pointer; }
+.parley-fold:hover, .parley-fold:focus-visible { color: var(--parley-text); border-color: var(--parley-action); outline: none; }
+.parley-fold-fill { position: absolute; inset: 0; width: 0; background: color-mix(in srgb, var(--parley-action) 32%, transparent); border-right: 2px solid var(--parley-action); animation-name: parley-fold-count; animation-timing-function: linear; animation-fill-mode: forwards; }
+.parley-fold-label { position: relative; }
+/* As the message slides shut (its max-height eased in JS), the bar fades with it. */
+.parley-fold.parley-fold-going { opacity: 0; transition: opacity .3s ease; pointer-events: none; }
+/* #183: the bar comes in softly, it does not pop up. */
+.parley-fold.parley-fold-new { animation: parley-fold-in .4s ease both; }
+@keyframes parley-fold-in { from { opacity: 0; transform: translateY(-3px); } to { opacity: 1; transform: none; } }
+@keyframes parley-fold-count { from { width: 0; } to { width: 100%; } }
+@media (prefers-reduced-motion: reduce) { .parley-fold-fill { animation: none; width: 100%; } }
+/* The alerts of GitHub, as boxes. */
+.parley-callout { --parley-c: var(--parley-note); border-left: 4px solid var(--parley-c); border-radius: 6px; padding: .5em .8em; background: color-mix(in srgb, var(--parley-c) 9%, transparent); }
+.parley-callout[data-kind="tip"] { --parley-c: var(--parley-tip); }
+.parley-callout[data-kind="important"] { --parley-c: var(--parley-important); }
+.parley-callout[data-kind="warning"] { --parley-c: var(--parley-warning); }
+.parley-callout[data-kind="caution"] { --parley-c: var(--parley-caution); }
+.parley-callout-head { display: flex; align-items: center; gap: .4em; font-weight: 700; color: var(--parley-c); }
+.parley-callout-head .parley-sign { width: 1.15em; height: 1.15em; }
+/* Tables: a wide one scrolls within its message. */
+.parley-table { overflow-x: auto; max-width: 100%; border: 1px solid var(--parley-line); border-radius: 8px; }
+.parley-table table { border-collapse: collapse; min-width: 100%; font-size: .95em; }
+.parley-table th, .parley-table td { padding: .35em .7em; border-bottom: 1px solid var(--parley-line); text-align: left; vertical-align: top; overflow-wrap: normal; word-break: normal; }
+.parley-table th { background: var(--parley-agent); font-weight: 650; white-space: nowrap; }
+.parley-table tr:last-child td { border-bottom: 0; }
+.parley-table td { min-width: 6em; }
+/* Code: its language, a Copy button, its colours as tokens. */
+.parley-code { border: 1px solid var(--parley-line); border-radius: 8px; background: var(--parley-code-bg); overflow: hidden; }
+.parley-code-bar { display: flex; align-items: center; justify-content: space-between; gap: .5em; padding: .15em .3em .15em .7em; border-bottom: 1px solid var(--parley-line); font-size: .8em; color: var(--parley-dim); }
+.parley .parley-copy { display: inline-flex; align-items: center; gap: .35em; min-height: 2em; padding: 0 .6em; border: 0; background: transparent; color: var(--parley-dim); font-size: 1em; }
+.parley .parley-copy[data-copied="true"] { color: var(--parley-tip); }
+.parley-copy .parley-sign { width: 1.1em; height: 1.1em; }
+.parley-code pre { margin: 0; padding: .6em .8em; overflow-x: auto; font-size: .88em; line-height: 1.5; }
+.parley-code pre code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; white-space: pre; padding: 0; border: 0; background: none; font-size: 1em; }
+.parley-tok-comment, .parley-tok-prolog, .parley-tok-doctype, .parley-tok-cdata { color: var(--parley-tok-comment); font-style: italic; }
+.parley-tok-keyword, .parley-tok-atrule, .parley-tok-important, .parley-tok-selector, .parley-tok-builtin { color: var(--parley-tok-keyword); }
+.parley-tok-string, .parley-tok-char, .parley-tok-regex, .parley-tok-attr-value, .parley-tok-url { color: var(--parley-tok-string); }
+.parley-tok-number, .parley-tok-boolean, .parley-tok-constant, .parley-tok-symbol, .parley-tok-variable { color: var(--parley-tok-number); }
+.parley-tok-function, .parley-tok-class-name { color: var(--parley-tok-function); }
+.parley-tok-tag, .parley-tok-property, .parley-tok-key { color: var(--parley-tok-tag); }
+.parley-tok-attr-name { color: var(--parley-tok-attr); }
+.parley-tok-deleted { color: var(--parley-tok-deleted); }
+.parley-tok-inserted { color: var(--parley-tok-inserted); }
+.parley-tok-bold { font-weight: 700; } .parley-tok-italic { font-style: italic; }
+/* Pictures: bounded, side by side when several; a drawing on light ground in both themes. */
+.parley .parley-thumb { display: inline-block; min-height: 0; padding: 0; border: 1px solid var(--parley-line); border-radius: 8px; overflow: hidden; background: var(--parley-agent); cursor: zoom-in; max-width: 100%; line-height: 0; }
+.parley-thumb img { display: block; max-width: 100%; max-height: 18rem; width: auto; height: auto; object-fit: contain; }
+.parley-figure { display: inline-flex; flex-direction: column; gap: .2em; max-width: 100%; vertical-align: top; }
+.parley-caption { font-size: .8em; color: var(--parley-dim); }
+.parley-pictures { display: flex; flex-wrap: wrap; gap: .5em; align-items: flex-start; margin-top: .35em; }
+.parley-pictures .parley-thumb img { max-height: 14rem; }
+.parley-pictures br { display: none; }
+.parley-diagram { margin: 0; }
+.parley-diagram .parley-thumb { background: #ffffff; }
+.parley-diagram .parley-thumb img { max-height: 28rem; }
+.parley-diagram-wait { display: block; padding: 1em; color: var(--parley-dim); font-size: .9em; border: 1px dashed var(--parley-line); border-radius: 8px; }
+.parley-noimg { display: inline-block; padding: 0 .5em; border: 1px dashed var(--parley-line); border-radius: 6px; color: var(--parley-dim); font-size: .9em; }
+/* A file: a card with its kind, its name, its size, and Open. */
+.parley-card { display: inline-flex; align-items: center; gap: .6em; max-width: 100%; min-width: 0; padding: .35em .5em; border: 1px solid var(--parley-line); border-radius: 10px; background: var(--parley-bg); }
+/* The card that opens: the whole of it is the button, shown so by its pointer and a light hover. */
+.parley .parley-card[data-opens] { font: inherit; color: inherit; text-align: left; cursor: pointer; padding: .35em .9em .35em .5em; min-height: 2.9em; }
+.parley .parley-card[data-opens]:hover { border-color: var(--parley-action); }
+.parley .parley-card[data-opens]:focus-visible { outline: 2px solid var(--parley-action); outline-offset: 2px; }
+.parley-card-icon { position: relative; flex: none; width: 2.2em; height: 2.2em; display: inline-flex; align-items: center; justify-content: center; color: var(--parley-dim); }
+.parley-card-icon .parley-sign { width: 1.9em; height: 1.9em; stroke-width: 1.6; }
+.parley-card-about { display: flex; flex-direction: column; min-width: 0; line-height: 1.25; }
+.parley-card-about .parley-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.parley-card .parley-open { flex: none; margin-left: .3em; }
+/* ---- a question, a reply, a closed question ---- */
+.parley .parley-reply-to { min-height: 2.6em; margin-top: .5em; padding: 0 1.1em; border-radius: 999px; font-size: .95em; font-weight: 600; color: var(--parley-text); background: var(--parley-agent); }
+.parley-inreply { font-size: .8em; color: var(--parley-dim); border-left: 2px solid var(--parley-line); padding-left: .5em; margin-bottom: .25em; }
+.parley-inreply::before { content: "\21b3  "; }
+.parley-closed { font-size: .9em; color: var(--parley-tip); font-weight: 600; }
+.parley-said[data-closed="true"] .parley-choices button { opacity: .55; }
+.parley-replying { display: flex; align-items: center; gap: .3em; max-width: 100%; align-self: flex-start; padding: 0 0 0 .8em; border: 1px solid var(--parley-line); border-left: 3px solid var(--parley-ask); border-radius: 8px; font-size: .9em; color: var(--parley-text); margin-bottom: calc(var(--parley-gap) * -.4); }
+.parley-replying[hidden] { display: none; }
+.parley-replying-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.parley .parley-unreply { min-height: 2.6em; min-width: 2.6em; padding: 0; border: 0; background: transparent; color: var(--parley-dim); font-size: 1.1em; }
+/* ---- where each message of the person is: a small sign in its corner ---- */
+.parley-said[data-from="person"] { padding-right: 2em; }
+.parley-sign-state { position: absolute; right: .45em; bottom: .35em; display: inline-flex; color: var(--parley-dim); }
+.parley-sign-state .parley-sign { width: 1em; height: 1em; }
+.parley-sign-state[data-state="done"], .parley-sign-state[data-state="read"] { color: var(--parley-action); }
+.parley-sign-state[data-state="sent"] .parley-hand { transform-origin: 12px 12px; animation: parley-hand 2.4s linear infinite; }
+.parley-sign-state[data-state="working"] .parley-sign { animation: parley-turn 1s linear infinite; }
+@keyframes parley-hand { to { transform: rotate(360deg); } }
+@keyframes parley-turn { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .parley-sign-state .parley-sign, .parley-sign-state .parley-hand { animation: none !important; } }
+.parley-said[data-from="person"] .parley-remind { display: block; margin-top: .35em; }
+/* ---- it waits for the person; it is busy ---- */
+/* Received and nothing yet from the agent: quiet, it claims nothing. */
+.parley-received { align-self: flex-start; padding: .3em .8em; font-size: .92em; font-style: italic; opacity: .75; }
+.parley-received[data-long="true"] { font-style: normal; }
+.parley-waits { align-self: flex-start; padding: .3em .8em; border-radius: 999px; font-weight: 600; font-size: .92em; color: var(--parley-ask); border: 1px solid color-mix(in srgb, var(--parley-ask) 45%, transparent); }
+.parley-now[data-busy="true"] .parley-doing { color: var(--parley-ask); }
+/* ---- lines of the application, by level ---- */
+.parley-system[data-level="news"], .parley-group { border: 0; padding: .15em .5em; font-size: .85em; }
+.parley-system[data-level="trace"] { border: 0; padding: .1em .5em; font-size: .8em; opacity: .85; }
+.parley-system[data-tone="warn"] .parley-system-text::before, .parley-system[data-tone="bad"] .parley-system-text::before { content: ""; display: inline-block; width: .55em; height: .55em; border-radius: 50%; margin-right: .45em; background: var(--parley-ask); vertical-align: .05em; }
+.parley-system[data-tone="bad"] .parley-system-text::before { background: var(--parley-live); }
+.parley .parley-group-line { align-self: center; display: inline-flex; gap: .6em; align-items: baseline; min-height: 2em; padding: 0 .8em; border-radius: 999px; border-color: transparent; background: transparent; color: var(--parley-dim); font-size: 1em; }
+.parley-group-lines[hidden] { display: none; }
+/* ---- back to the newest ---- */
+.parley .parley-jump { position: absolute; right: 1em; bottom: .8em; z-index: 2; width: 2.6em; height: 2.6em; min-height: 0; padding: 0; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; background: var(--parley-bg); color: var(--parley-text); box-shadow: 0 2px 10px rgba(0, 0, 0, .2); }
+.parley .parley-jump[hidden] { display: none; }
+.parley-jump-count { position: absolute; top: -.35em; right: -.35em; min-width: 1.4em; height: 1.4em; padding: 0 .3em; box-sizing: border-box; border-radius: 999px; background: var(--parley-action); color: var(--parley-on-action); font-size: .72em; font-weight: 700; line-height: 1.4em; text-align: center; }
+.parley-jump-count[hidden] { display: none; }
+/* ---- the part before what is shown ---- */
+.parley-row[data-type="earlier"] { display: flex; justify-content: center; padding: .4em 0 .2em; }
+.parley .parley-earlier, .parley .parley-media-earlier { min-height: 2.2em; padding: 0 1em; border: 1px solid var(--parley-line); border-radius: 999px; background: transparent; color: var(--parley-action); font-size: .85em; }
+.parley .parley-media-earlier { display: block; margin: .8em auto 0; }
+.parley .parley-earlier:disabled, .parley .parley-media-earlier:disabled { opacity: .55; }
+/* ---- the search ---- */
+.parley-search { display: flex; align-items: center; gap: .35em; width: 100%; max-width: var(--parley-column); margin-inline: auto; box-sizing: border-box; padding: .2em .4em; border: 1px solid var(--parley-line); border-radius: 12px; }
+.parley-search[hidden] { display: none; }
+.parley-search > .parley-sign { width: 1.1em; height: 1.1em; color: var(--parley-dim); flex: none; }
+.parley-search-box { flex: 1; min-width: 0; font: inherit; border: 0; background: transparent; color: var(--parley-text); padding: .4em .2em; outline: none; }
+.parley-search-count { font-size: .85em; color: var(--parley-dim); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.parley .parley-search button { min-height: 2.2em; min-width: 2.2em; padding: 0; border: 0; background: transparent; color: var(--parley-dim); display: inline-flex; align-items: center; justify-content: center; }
+mark.parley-found { background: var(--parley-mark); color: inherit; border-radius: 2px; }
+mark.parley-found[data-now="true"] { outline: 2px solid var(--parley-ask); }
+.parley .parley-search-open { display: flex; align-items: center; gap: .5em; width: 100%; min-height: 2.5em; border: 0; border-radius: 999px; background: transparent; text-align: left; }
+.parley .parley-auto[hidden] { display: none; }
+.parley-prefs-menu .parley-sign { width: 1.1em; height: 1.1em; }
+/* ---- files about to go: pictures as pictures ---- */
+.parley-pending-picture { padding: 0; overflow: hidden; border-radius: 10px; position: relative; }
+.parley-pending-picture img { display: block; height: 4.2em; width: auto; max-width: 8em; object-fit: cover; }
+.parley-pending-picture .parley-unattach { position: absolute; top: .1em; right: .1em; min-height: 1.6em; min-width: 1.6em; background: var(--parley-bg); opacity: .9; }
+.parley-pending .parley-card-icon { width: 1.8em; height: 1.8em; }
+.parley-pending .parley-card-icon .parley-sign { width: 1.8em; height: 1.8em; }
+.parley-pending .parley-card-about { font-size: .95em; }
+.parley-drop { position: absolute; inset: .4em; z-index: 5; display: flex; align-items: center; justify-content: center; border: 3px dashed var(--parley-action); border-radius: 16px; background: color-mix(in srgb, var(--parley-bg) 88%, transparent); color: var(--parley-action); font-weight: 700; font-size: 1.1em; pointer-events: none; }
+.parley-drop[hidden] { display: none; }
+.parley { position: relative; }
+/* ---- a picture, large ---- */
+.parley-zoom { position: fixed; inset: 0; z-index: 1000; display: flex; flex-direction: column; background: rgba(8, 10, 14, .94); color: #f2f3f5; outline: none; }
+.parley-zoom[hidden] { display: none; }
+.parley-zoom-stage { flex: 1; min-height: 0; position: relative; overflow: hidden; touch-action: none; cursor: zoom-in; }
+.parley-zoom[data-zoomed="true"] .parley-zoom-stage { cursor: grab; }
+.parley-zoom-stage img { position: absolute; left: 0; top: 0; transform-origin: 0 0; max-width: none; user-select: none; -webkit-user-drag: none; }
+.parley-zoom-bar { display: flex; align-items: center; gap: .3em; padding: calc(.4em + env(safe-area-inset-top)) .6em .4em; flex-wrap: wrap; justify-content: center; background: rgba(0, 0, 0, .4); }
+/* Narrow: the name and Close on the first line, the tools centred on the second; wide: one line, Close last and apart. */
+.parley-zoom-name { flex: 1 1 0; min-width: 0; font-size: .85em; opacity: .85; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.parley-zoom-tools { order: 2; flex: 1 1 100%; display: flex; flex-wrap: wrap; justify-content: center; gap: .3em; }
+.parley .parley-zoom-bar button { min-height: 2.6em; min-width: 2.6em; padding: 0 .55em; gap: .35em; border-color: rgba(255, 255, 255, .25); background: transparent; color: #f2f3f5; display: inline-flex; align-items: center; justify-content: center; font-size: .9em; }
+.parley .parley-zoom-bar .parley-zoom-minus, .parley .parley-zoom-bar .parley-zoom-plus, .parley .parley-zoom-bar .parley-zoom-left, .parley .parley-zoom-bar .parley-zoom-right { padding: 0; }
+.parley-zoom-word { display: none; }
+.parley-zoom-short { font-weight: 600; }
+.parley .parley-zoom-bar .parley-zoom-close { order: 1; padding: 0 .8em 0 .6em; border-color: transparent; background: rgba(255, 255, 255, .16); font-weight: 600; }
+.parley .parley-zoom-bar .parley-zoom-close:hover { background: rgba(255, 255, 255, .26); }
+.parley .parley-zoom-bar button[hidden] { display: none; }
+@container parley (min-width: 46rem) {
+  .parley-zoom-name { flex: 0 1 auto; margin-right: auto; text-align: left; }
+  .parley-zoom-tools { order: 0; flex: none; }
+  .parley .parley-zoom-bar .parley-zoom-minus, .parley .parley-zoom-bar .parley-zoom-plus, .parley .parley-zoom-bar .parley-zoom-left, .parley .parley-zoom-bar .parley-zoom-right { padding: 0 .65em 0 .45em; }
+  .parley-zoom-word { display: inline; }
+  .parley .parley-zoom-bar .parley-zoom-close { margin-left: .9em; }
+}
+/* ---- drawing on a picture before it is sent ---- */
+.parley-noted { margin: 0; display: flex; flex-direction: column; gap: .2em; max-width: 16em; }
+.parley-file-note { font-size: .85em; color: var(--parley-dim); font-style: italic; overflow-wrap: anywhere; }
+
+.parley-draw { background: #0d0f13; }
+.parley-draw .parley-zoom-name { flex: 1 1 100%; text-align: center; }
+.parley .parley-draw .parley-zoom-bar .parley-zoom-close { order: 0; }
+.parley-draw-stage { flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; padding: .4em; overflow: hidden; }
+.parley-draw-canvas { display: block; touch-action: none; cursor: crosshair; background: #fff; box-shadow: 0 0 0 1px rgba(255, 255, 255, .2); }
+.parley-draw-colours { display: inline-flex; gap: .3em; align-items: center; padding-inline: .3em; }
+.parley .parley-zoom-bar .parley-draw-colour { min-width: 2em; min-height: 2em; width: 2em; height: 2em; padding: 0; border-radius: 50%; border: 2px solid rgba(255, 255, 255, .5); }
+.parley .parley-zoom-bar .parley-draw-colour[aria-checked="true"] { outline: 3px solid #f2f3f5; outline-offset: 2px; }
+.parley-draw .parley-zoom-undo .parley-zoom-word, .parley-draw .parley-zoom-clear .parley-zoom-word { display: none; }
+.parley-draw .parley-zoom-close .parley-zoom-word, .parley-draw .parley-zoom-done .parley-zoom-word { display: inline; }
+.parley .parley-zoom-bar .parley-zoom-done { border-color: transparent; background: var(--parley-action); color: var(--parley-on-action); font-weight: 650; padding: 0 .9em 0 .6em; }
+.parley .parley-zoom-bar button:disabled { opacity: .4; }
+.parley-draw-foot { display: flex; flex-direction: column; gap: .3em; padding: .4em .6em calc(.5em + env(safe-area-inset-bottom)); background: rgba(0, 0, 0, .4); }
+.parley-draw-hint { margin: 0; font-size: .8em; opacity: .75; text-align: center; }
+.parley .parley-draw-note { width: 100%; max-width: 48rem; margin-inline: auto; box-sizing: border-box; resize: none; font: inherit; font-size: 16px; padding: .45em .6em; border-radius: 10px; border: 1px solid rgba(255, 255, 255, .3); background: rgba(255, 255, 255, .08); color: #f2f3f5; }
+@container parley (min-width: 46rem) {
+  .parley-draw .parley-zoom-name { flex: 0 1 auto; }
+  .parley-draw .parley-zoom-undo .parley-zoom-word, .parley-draw .parley-zoom-clear .parley-zoom-word { display: inline; }
+}
+.parley .parley-pending-open { display: block; position: relative; padding: 0; border: 0; background: none; cursor: zoom-in; min-height: 0; }
+.parley-pending-marked { position: absolute; left: .2em; bottom: .2em; display: inline-flex; padding: .15em; border-radius: 6px; background: var(--parley-action); color: var(--parley-on-action); }
+.parley-pending-marked .parley-sign { width: .9em; height: .9em; }
+/* ---- the composer, in the same column ---- */
+.parley-top, .parley-quick, .parley-attached, .parley-form, .parley-problem, .parley-replying { width: 100%; max-width: var(--parley-column); margin-inline: auto; box-sizing: border-box; }
+.parley-replying { width: auto; margin-inline: 0; max-width: min(100%, var(--parley-column)); }
+@container parley (min-width: 60rem) { .parley-replying { margin-left: max(0px, calc((100% - var(--parley-column)) / 2)); } }
+.parley[data-view="detailed"] .parley-top { max-width: none; }
+.parley-dictation { border-top: 1px solid var(--parley-line); margin-top: .35em; padding-top: .35em; }
+.parley-dictation[hidden] { display: none; }
+.parley-menu-head { font-size: .75em; text-transform: uppercase; letter-spacing: .06em; color: var(--parley-dim); padding: .2em .9em; }
+.parley .parley-auto { display: flex; flex-direction: column; align-items: flex-start; width: 100%; }
+.parley-auto-off { font-size: .82em; color: var(--parley-dim); }
+.parley-auto-off[hidden] { display: none; }
+
+/* ---- room between the thread and the box; the box set apart by a line ---- */
+.parley-composer { display: flex; flex-direction: column; gap: var(--parley-gap); padding-top: .75rem; border-top: 1px solid var(--parley-line); box-shadow: 0 -10px 16px -14px rgba(0, 0, 0, .25); }
+/* The line of what it does, and its states, with room of their own. */
+.parley-row[data-type="now"], .parley-row[data-type="received"], .parley-row[data-type="waits"], .parley-row[data-type="done"] { margin-top: .35rem; }
+/* ---- a wide screen: the column grows, running text keeps a reading measure; tables, code, drawings and galleries take the width ---- */
+.parley-md > p, .parley-md > ul, .parley-md > ol, .parley-md > blockquote, .parley-md > .parley-h, .parley-short, .parley-said[data-from="agent"] > .parley-text, .parley-md > .parley-callout { max-width: var(--parley-measure); }
+.parley-md > p.parley-pictures { max-width: none; }
+@container parley (min-width: 60rem) { .parley[data-view="detailed"] .parley-aside { width: 20rem; } }
+/* ---- done: said once, quietly, at the end ---- */
+.parley-done { align-self: flex-start; padding: .2em .8em; border-radius: 12px; font-size: .88em; color: var(--parley-dim); border: 1px solid var(--parley-line); }
+.parley-done::before { content: "\2713  "; color: #2f8f4e; font-weight: 700; }
+/* ---- several files shown at once: a gallery, each its title under it ---- */
+.parley-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 9rem), 1fr)); gap: .6em; margin-top: .45em; }
+.parley-gallery[data-count="1"] { grid-template-columns: minmax(0, 28rem); }
+@container parley (min-width: 60rem) { .parley-gallery { grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr)); max-width: 64rem; } }
+.parley-gallery-item { margin: 0; display: flex; flex-direction: column; gap: .25em; min-width: 0; }
+.parley-gallery-item .parley-figure, .parley-gallery-item .parley-thumb { display: flex; flex-direction: column; width: 100%; }
+.parley-gallery-item .parley-thumb img { width: 100%; height: auto; aspect-ratio: 4 / 3; max-height: none; object-fit: cover; }
+.parley-gallery[data-count="1"] .parley-thumb img { aspect-ratio: auto; max-height: 22rem; object-fit: contain; }
+.parley-caption { font-size: .85em; color: var(--parley-text); line-height: 1.3; overflow-wrap: anywhere; }
+.parley-gallery-item .parley-card { width: 100%; box-sizing: border-box; flex-wrap: wrap; }
+.parley-gallery-item .parley-card-about { flex: 1 1 6em; }
+.parley-gallery-item .parley-card-about .parley-name { white-space: normal; overflow-wrap: anywhere; }
+/* ---- the name of the agent; its tool, small, in the detailed view ---- */
+.parley-tool { font-size: .9em; color: var(--parley-dim); padding: 0 .4em; border: 1px solid var(--parley-line); border-radius: 999px; }
+/* ---- dictated: a small microphone on the bubble ---- */
+.parley-dictated { position: absolute; left: -1.4em; top: .5em; color: var(--parley-dim); display: inline-flex; }
+.parley-dictated .parley-sign { width: .95em; height: .95em; }
+/* ---- reactions ---- */
+.parley .parley-react-open { position: absolute; top: 0; right: 0; min-height: 0; width: 2.2em; height: 2.2em; padding: 0; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; color: var(--parley-dim); background: var(--parley-bg); opacity: 0; transition: opacity .12s; }
+.parley-said:hover > .parley-react-open, .parley .parley-react-open:focus-visible, .parley-said[data-reveal="true"] > .parley-react-open { opacity: 1; }
+/* A touch screen: no hover, so a tap on a message shows its button (and its time) a few seconds; out of sight otherwise,
+   the thread kept plain. A long press selects its text. */
+@media (hover: none), (pointer: coarse) {
+  .parley-said:hover > .parley-react-open { opacity: 0; }
+  .parley .parley-react-open { pointer-events: none; }
+  .parley-said[data-reveal="true"] > .parley-react-open { opacity: 1; pointer-events: auto; }
+}
+.parley-react-open .parley-sign { width: 1.15em; height: 1.15em; }
+.parley .parley-reaction { display: inline-flex; align-items: center; gap: .35em; margin-top: .4em; min-height: 2em; padding: 0 .75em; border-radius: 999px; font-size: .85em; font-weight: 600; color: var(--parley-text); background: var(--parley-agent); }
+.parley .parley-reaction:disabled { opacity: 1; cursor: default; }
+.parley-reaction .parley-sign { width: 1.1em; height: 1.1em; }
+.parley-react { position: absolute; z-index: 6; width: max-content; max-width: min(26rem, calc(100% - 1rem)); padding: .5em; border: 1px solid var(--parley-line); border-radius: 14px; background: var(--parley-bg); box-shadow: 0 8px 28px rgba(0, 0, 0, .22); display: flex; flex-direction: column; gap: .4em; }
+.parley-react[hidden] { display: none; }
+/* On a narrow screen: a panel that rises from the bottom; the message it is about stays in sight above it, marked. */
+.parley-react[data-sheet="true"] { position: absolute; left: 0; right: 0; bottom: 0; top: auto; width: auto; max-width: none; padding: .5em .75em calc(.75em + env(safe-area-inset-bottom)); border-width: 1px 0 0; border-radius: 16px 16px 0 0; box-shadow: 0 -10px 30px rgba(0, 0, 0, .25); animation: parley-sheet-up .2s cubic-bezier(.2, .8, .2, 1); }
+.parley-react[data-sheet="true"]::before { content: ""; align-self: center; width: 2.4em; height: 4px; margin-bottom: .2em; border-radius: 2px; background: var(--parley-line); }
+.parley-react[data-sheet="true"] .parley-react-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+@keyframes parley-sheet-up { from { transform: translateY(100%); } to { transform: none; } }
+@media (prefers-reduced-motion: reduce) { .parley-react[data-sheet="true"] { animation: none; } }
+.parley-said[data-reacting="true"] { outline: 2px solid var(--parley-action); outline-offset: 3px; }
+.parley-react:focus { outline: none; }
+.parley-react-grid { display: grid; grid-template-columns: repeat(4, minmax(4.6em, 1fr)); gap: .25em; }
+.parley .parley-react-choice { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .25em; min-height: 4em; padding: .4em .3em; border-color: transparent; border-radius: 10px; background: transparent; font-size: .82em; line-height: 1.15; text-align: center; }
+.parley .parley-react-choice:hover { background: var(--parley-agent); }
+.parley .parley-react-choice[aria-pressed="true"] { border-color: var(--parley-action); background: var(--parley-agent); font-weight: 650; }
+.parley-react-choice .parley-sign { width: 1.6em; height: 1.6em; }
+.parley-react-choice[data-reaction="stop"], .parley-reaction[data-reaction="stop"] { color: var(--parley-react-stop); }
+.parley-react-choice[data-reaction="stop"] .parley-sign, .parley-reaction[data-reaction="stop"] .parley-sign { fill: color-mix(in srgb, var(--parley-react-stop) 16%, transparent); }
+.parley-react-choice[data-reaction="go"] .parley-sign, .parley-reaction[data-reaction="go"] .parley-sign { color: var(--parley-react-go); }
+.parley-react-choice[data-reaction="love"] .parley-sign, .parley-reaction[data-reaction="love"] .parley-sign { color: var(--parley-react-love); }
+.parley-react-word { color: inherit; }
+.parley .parley-react-reply { display: inline-flex; align-items: center; justify-content: center; gap: .45em; min-height: 2.4em; border-radius: 10px; font-size: .9em; }
+.parley .parley-react-reply[hidden] { display: none; }
+.parley-react-reply .parley-sign { width: 1.1em; height: 1.1em; }
+.parley-said[data-found="true"], .parley-system[data-found="true"] { animation: parley-found 1.8s ease-out; }
+@keyframes parley-found { 0%, 40% { background: var(--parley-mark); } 100% { background: transparent; } }
+/* ---- the media of the thread ---- */
+.parley-media { position: absolute; inset: 0; z-index: 7; display: flex; flex-direction: column; background: var(--parley-bg); outline: none; }
+.parley-media[hidden] { display: none; }
+.parley-media-head { display: flex; align-items: center; gap: .6em; padding: .4em .2em .6em; border-bottom: 1px solid var(--parley-line); flex-wrap: wrap; }
+.parley-media-head h3 { font-size: 1em; margin-right: auto; }
+.parley-media-tabs { display: flex; border: 1px solid var(--parley-line); border-radius: 999px; padding: 2px; }
+.parley .parley-media-tab { border: 0; border-radius: 999px; min-height: 2.1em; padding: 0 .9em; background: transparent; color: var(--parley-dim); }
+.parley .parley-media-tab[aria-selected="true"] { background: var(--parley-agent); color: var(--parley-text); font-weight: 600; }
+.parley .parley-media-close { min-width: 2.6em; padding: 0; display: inline-flex; align-items: center; justify-content: center; }
+.parley-media-body { flex: 1; min-height: 0; overflow: auto; padding: .8em .2em; }
+.parley-media-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(46%, 10rem), 1fr)); gap: .6em; }
+.parley-media-item { margin: 0; display: flex; flex-direction: column; gap: .2em; min-width: 0; }
+.parley .parley-media-thumb { padding: 0; min-height: 0; border-radius: 8px; overflow: hidden; line-height: 0; cursor: zoom-in; background: var(--parley-agent); }
+.parley-media-thumb img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; }
+.parley-media-item figcaption { font-size: .85em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.parley .parley-media-where { align-self: flex-start; min-height: 1.8em; padding: 0 .5em; border: 0; background: transparent; color: var(--parley-action); font-size: .8em; text-decoration: underline; text-underline-offset: 2px; }
+.parley-media-files { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: .45em; }
+.parley-media-files li { display: flex; align-items: center; gap: .5em; flex-wrap: wrap; }
+.parley .parley-media-open { display: flex; align-items: center; gap: .5em; width: 100%; min-height: 2.5em; border: 0; border-radius: 999px; background: transparent; text-align: left; }
+/* ---- the detailed view's side: what it does now, its machine ---- */
+.parley-side-doing { font-style: italic; color: var(--parley-dim); }
+.parley-side-about dl { display: grid; grid-template-columns: auto 1fr; gap: .2em .7em; margin: 0; font-size: .92em; }
+.parley-side-about dt { color: var(--parley-dim); }
+.parley-side-about dd { margin: 0; overflow-wrap: anywhere; }
+.parley-side-about dd[data-tone="warn"] { color: var(--parley-ask); }
+.parley-side-about dd[data-tone="bad"] { color: var(--parley-live); font-weight: 600; }
+.parley-side-about dd[data-tone="ok"] { color: var(--parley-tip); }
+/* ---- what arrives while the chat is open comes in softly, and its start is marked a moment ---- */
+.parley-row[data-arrived="message"] > .parley-said { animation: parley-in .23s ease-out, parley-glow 1.5s ease-out; }
+.parley-row[data-arrived="line"] > * { animation: parley-in-soft .23s ease-out, parley-glow-soft 1.5s ease-out; }
+@keyframes parley-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@keyframes parley-in-soft { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+@keyframes parley-glow { from { box-shadow: -3px 0 0 0 var(--parley-action); background-color: var(--parley-arrive); } to { box-shadow: -3px 0 0 0 transparent; background-color: transparent; } }
+@keyframes parley-glow-soft { from { background-color: var(--parley-arrive); } to { background-color: transparent; } }
+.parley-row[data-arrived] > .parley-said[data-from="person"] { animation-name: parley-in, parley-glow-person; }
+@keyframes parley-glow-person { from { box-shadow: 0 0 0 2px var(--parley-action); } to { box-shadow: 0 0 0 2px transparent; } }
+@media (prefers-reduced-motion: reduce) {
+  .parley-row[data-arrived="message"] > .parley-said { animation: parley-glow 1.5s ease-out; }
+  .parley-row[data-arrived] > .parley-said[data-from="person"] { animation: parley-glow-person 1.5s ease-out; }
+  .parley-row[data-arrived="line"] > * { animation: parley-glow-soft 1.5s ease-out; }
+}
+/* ---- a picture, large: its bar on top, the strip of the others at the bottom ---- */
+.parley-zoom-bar { order: 0; }
+.parley-zoom-stage { cursor: zoom-out; }
+.parley-zoom[data-opening="true"] .parley-zoom-stage { overflow: visible; }
+.parley-zoom-strip { display: flex; gap: .35em; padding: .45em .6em calc(.45em + env(safe-area-inset-bottom)); overflow-x: auto; justify-content: safe center; background: rgba(0, 0, 0, .4); }
+.parley-zoom-strip[hidden] { display: none; }
+.parley .parley-zoom-thumb { flex: none; width: 3.4em; height: 3.4em; min-height: 0; padding: 0; border: 2px solid transparent; border-radius: 6px; overflow: hidden; background: transparent; opacity: .6; line-height: 0; }
+.parley .parley-zoom-thumb[aria-current="true"] { border-color: #f2f3f5; opacity: 1; }
+.parley-zoom-thumb img { width: 100%; height: 100%; object-fit: cover; }
+/* Detailed, with its side: the box under the thread, not under the side. */
+@container parley (min-width: 46rem) { .parley[data-view="detailed"] .parley-composer { padding-right: calc(18rem + var(--parley-gap)); } }
+@container parley (min-width: 60rem) { .parley[data-view="detailed"] .parley-composer { padding-right: calc(20rem + var(--parley-gap)); } }
+/* A decision it waits for: Go ahead and Disagree under the message, in sight. */
+.parley-decide { display: flex; flex-wrap: wrap; gap: .5em; margin-top: .6em; }
+.parley .parley-decide-choice { display: inline-flex; align-items: center; gap: .45em; min-height: 2.5em; padding: 0 1em; border-radius: 999px; font-weight: 600; background: var(--parley-bg); }
+.parley .parley-decide-choice[data-reaction="go"] { border-color: var(--parley-react-go); }
+.parley-decide-choice .parley-sign { width: 1.15em; height: 1.15em; }
+.parley-decide-choice[data-reaction="go"] .parley-sign { color: var(--parley-react-go); }
+/* A word of a line of the application that is a button (a commit it names): read as a link. */
+.parley .parley-ref { font: inherit; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 0.95em; color: var(--parley-action); background: none; border: 0; padding: 0 0.1em; margin: 0; text-decoration: underline; text-underline-offset: 2px; cursor: pointer; min-height: 0; }
+.parley .parley-ref:focus-visible { outline: 2px solid var(--parley-action); outline-offset: 1px; border-radius: 3px; }
+/* ---- under choices: their own words instead, quietly; choices to tick ---- */
+.parley .parley-reply-to.parley-other { align-self: flex-start; min-height: 2.75em; margin: .1em 0 0 -.35em; padding: 0 .35em; border: 0; border-radius: 6px; background: transparent; color: var(--parley-dim); font-weight: 500; text-decoration: underline; text-underline-offset: .22em; text-decoration-thickness: 1px; }
+.parley .parley-reply-to.parley-other:hover { color: var(--parley-action); }
+.parley-picks { flex-direction: column; align-items: stretch; flex-wrap: nowrap; gap: .4em; max-width: 34em; }
+.parley .parley-picks .parley-pick { display: flex; align-items: center; gap: .7em; min-height: 2.75em; border-radius: 10px; padding: .45em .9em; text-align: left; border: 1px solid var(--parley-line); background: var(--parley-bg); color: var(--parley-text); font-weight: 500; }
+.parley .parley-picks .parley-pick[aria-checked="true"] { border-color: var(--parley-action); background: color-mix(in srgb, var(--parley-action) 13%, var(--parley-bg)); font-weight: 650; }
+.parley-pick-box { flex: none; width: 1.45em; height: 1.45em; box-sizing: border-box; border: 2px solid var(--parley-dim); border-radius: 5px; display: inline-flex; align-items: center; justify-content: center; color: transparent; }
+.parley-pick[aria-checked="true"] .parley-pick-box { border-color: var(--parley-action); background: var(--parley-action); color: var(--parley-on-action); }
+.parley-pick-box .parley-sign { width: 1em; height: 1em; stroke-width: 3.2; }
+.parley-pick-text { min-width: 0; overflow-wrap: anywhere; }
+.parley .parley-picks .parley-picks-send { align-self: flex-start; min-width: 8em; margin-top: .2em; border-color: var(--parley-action); background: var(--parley-action); color: var(--parley-on-action); font-weight: 650; }
+/* ---- questions asked together: one card, a step each, a summary, one Send ---- */
+.parley-questions { display: flex; flex-direction: column; gap: .35em; margin-top: .35em; }
+.parley-questions-tabs { display: flex; flex-wrap: wrap; gap: .35em; margin-bottom: .35em; }
+.parley .parley-questions-tab { display: inline-flex; align-items: center; gap: .45em; min-height: 2.6em; padding: 0 .85em; border-radius: 999px; font-size: .9em; color: var(--parley-dim); background: transparent; }
+.parley .parley-questions-tab[data-done="true"] { color: var(--parley-text); }
+.parley .parley-questions-tab[aria-selected="true"] { border-color: var(--parley-ask); box-shadow: inset 0 0 0 1px var(--parley-ask); color: var(--parley-text); font-weight: 650; }
+.parley-questions-n { flex: none; display: inline-flex; align-items: center; justify-content: center; width: 1.55em; height: 1.55em; box-sizing: border-box; border: 1.5px solid currentColor; border-radius: 50%; font-size: .85em; font-weight: 700; }
+.parley-questions-tab[data-done="true"] .parley-questions-n { border-color: var(--parley-action); background: var(--parley-action); color: var(--parley-on-action); }
+.parley-questions-n .parley-sign { width: .95em; height: .95em; stroke-width: 3; }
+.parley-questions-step { font-size: .8em; font-weight: 650; color: var(--parley-dim); }
+.parley-questions-question { font-weight: 650; white-space: pre-wrap; overflow-wrap: anywhere; }
+.parley-questions-hint { font-size: .85em; color: var(--parley-dim); }
+.parley-questions .parley-choices { margin-top: .2em; }
+.parley .parley-questions .parley-choices button[aria-pressed="true"] { display: inline-flex; align-items: center; gap: .4em; }
+.parley .parley-questions .parley-choices button[aria-pressed="true"] .parley-sign { width: 1.1em; height: 1.1em; stroke-width: 3; }
+.parley-questions-free { width: 100%; max-width: 34em; box-sizing: border-box; min-height: 5.5em; margin-top: .2em; padding: .6em .8em; font: inherit; border-radius: 10px; border: 1px solid var(--parley-line); background: var(--parley-bg); color: var(--parley-text); resize: vertical; }
+.parley-questions-free:focus-visible { outline: 2px solid var(--parley-action); outline-offset: 2px; }
+.parley-questions-nav { display: flex; flex-wrap: wrap; align-items: center; gap: .6em; margin-top: .5em; }
+.parley .parley-questions-next, .parley .parley-questions-send { min-width: 8em; border-color: var(--parley-action); background: var(--parley-action); color: var(--parley-on-action); font-weight: 650; }
+.parley .parley-questions-back { background: transparent; }
+.parley-questions-summary { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: .15em .8em; align-items: baseline; max-width: 42em; margin: .2em 0 0; }
+.parley-questions-asked { grid-column: 1 / -1; margin-top: .45em; font-size: .9em; color: var(--parley-dim); overflow-wrap: anywhere; }
+.parley-questions-answer { margin: 0; font-weight: 650; white-space: pre-wrap; overflow-wrap: anywhere; }
+.parley-questions-answer[data-missing="true"] { font-weight: 500; font-style: italic; color: var(--parley-ask); }
+.parley .parley-questions-modify { min-height: 2.4em; padding: 0 .35em; border: 0; background: transparent; color: var(--parley-dim); text-decoration: underline; text-underline-offset: .22em; text-decoration-thickness: 1px; }
+.parley .parley-questions-modify:hover { color: var(--parley-action); }
+/* Narrow: the tabs say their number, the one shown its label too. */
+@container parley (max-width: 34rem) { .parley-questions-tab:not([aria-selected="true"]):not([data-summary]) .parley-questions-label { display: none; } }
+
+/* FORMULAS, drawn by KaTeX in the text's colour; its source, as code, until then or when it cannot be read. */
+.parley-math { overflow-wrap: normal; }
+.parley-math .katex { font-size: 1.1em; }
+.parley-math[data-display="true"] { display: block; overflow-x: auto; overflow-y: hidden; padding: .3em 0; text-align: center; }
+.parley-math[data-display="true"] .katex-display { margin: 0; }
+.parley-math-source { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .9em; color: var(--parley-dim); }
+
+/* A FAMILY: a warm paper, the generations in bands, serif names, golden rings and words. */
+.parley {
+  --parley-family-paper: #fbf8f1; --parley-family-band: #f3eee2; --parley-family-card: #ffffff; --parley-family-ink: #1f2a44; --parley-family-dim: #5a6170;
+  --parley-family-gold: #9a7430; --parley-family-inlaw: #b08a4a; --parley-family-born: #3e6b5a; --parley-family-line: #8c8270; --parley-family-gen: #8a8069;
+  --parley-serif: Spectral, Georgia, "Noto Serif", "DejaVu Serif", serif;
+}
+@media (prefers-color-scheme: dark) {
+  .parley:not([data-theme="light"]) { --parley-family-paper: #1a1814; --parley-family-band: #24211b; --parley-family-card: #2b2822; --parley-family-ink: #f1eadb; --parley-family-dim: #b9b09d;
+    --parley-family-gold: #dcb76e; --parley-family-inlaw: #c9a25e; --parley-family-born: #86bba4; --parley-family-line: #8f8775; --parley-family-gen: #a89e88; }
+}
+.parley[data-theme="dark"] { --parley-family-paper: #1a1814; --parley-family-band: #24211b; --parley-family-card: #2b2822; --parley-family-ink: #f1eadb; --parley-family-dim: #b9b09d;
+  --parley-family-gold: #dcb76e; --parley-family-inlaw: #c9a25e; --parley-family-born: #86bba4; --parley-family-line: #8f8775; --parley-family-gen: #a89e88; }
+.parley-family { position: relative; margin: 0; border-radius: 14px; background: var(--parley-family-paper); border: 1px solid var(--parley-line); }
+.parley-family-scroll { overflow-x: auto; border-radius: 14px; }
+.parley-family svg { display: block; width: 100%; max-width: calc(var(--parley-family-width) * 1.1); height: auto; margin: 0 auto; }
+.parley-family-band { fill: var(--parley-family-band); }
+.parley-family-gen { font: 600 10.5px system-ui, sans-serif; letter-spacing: .12em; text-transform: uppercase; fill: var(--parley-family-gen); paint-order: stroke; stroke: var(--parley-family-band); stroke-width: 5px; stroke-linejoin: round; }
+.parley-family-lines line, .parley-family-lines path { stroke: var(--parley-family-line); stroke-width: 1.8; fill: none; }
+.parley-family-links path { stroke: var(--parley-family-gold); stroke-width: 1.3; stroke-dasharray: 5 4; fill: none; }
+.parley-family-word { font: italic 400 13px var(--parley-serif); fill: var(--parley-family-gold); text-anchor: middle; paint-order: stroke; stroke: var(--parley-family-paper); stroke-width: 4px; stroke-linejoin: round; }
+.parley-family-ring { fill: none; stroke: var(--parley-family-gold); stroke-width: 1.8; }
+.parley-family-ring-first { fill: var(--parley-family-paper); }
+.parley-family-person { cursor: pointer; outline: none; }
+.parley-family-card { fill: var(--parley-family-card); stroke: var(--parley-family-born); stroke-width: 1.5; }
+.parley-family-bar { fill: var(--parley-family-born); }
+.parley-family-person[data-inlaw="true"] .parley-family-card { stroke: var(--parley-family-inlaw); }
+.parley-family-person[data-inlaw="true"] .parley-family-bar { fill: var(--parley-family-inlaw); }
+.parley-family-person:focus-visible .parley-family-card, .parley-family-person[data-picked="true"] .parley-family-card { stroke: var(--parley-action); stroke-width: 3; }
+.parley-family-name { font: 600 17px var(--parley-serif); fill: var(--parley-family-ink); text-anchor: middle; }
+.parley-family-dates { font: italic 400 13.5px var(--parley-serif); fill: var(--parley-family-dim); text-anchor: middle; }
+/* Narrow: the tree keeps a size that reads and scrolls sideways, as a wide table does; a fade says there is more. */
+@container parley (max-width: 40rem) {
+  .parley-family svg { min-width: calc(var(--parley-family-width) * .8); }
+  .parley-family-scroll { -webkit-mask-image: linear-gradient(to right, #000 88%, transparent); mask-image: linear-gradient(to right, #000 88%, transparent); }
+}
+
+/* ZONES ON A PICTURE: each outlined, light over dark and dark over light; what the agent asks about, dashed, with "?". */
+.parley-zoned { margin: 0; max-width: 34rem; }
+.parley-zoned-frame { position: relative; }
+.parley-zoned-frame img { display: block; width: 100%; height: auto; border-radius: 10px; cursor: zoom-in; }
+.parley-zoned .parley-caption { display: block; margin-top: .25em; }
+.parley .parley-zone { position: absolute; margin: 0; padding: 0; min-height: 0; background: transparent; cursor: pointer;
+  border: 2px solid rgba(255, 255, 255, .8); border-radius: 12px; box-shadow: 0 0 0 1.5px rgba(0, 0, 0, .45), inset 0 0 0 1px rgba(0, 0, 0, .25); }
+.parley .parley-zone:hover, .parley .parley-zone[data-picked="true"] { border-color: #ffffff; border-width: 3px; box-shadow: 0 0 0 2px rgba(0, 0, 0, .5); }
+.parley .parley-zone[data-unknown="true"] { border: 3px dashed var(--parley-ask); box-shadow: 0 0 0 2px rgba(0, 0, 0, .3); }
+.parley-zone-ask { position: absolute; top: -.85em; right: -.85em; width: 1.7em; height: 1.7em; border-radius: 50%; display: grid; place-items: center;
+  background: var(--parley-ask); color: var(--parley-bg); font-weight: 800; box-shadow: 0 1px 4px rgba(0, 0, 0, .4); }
+
+/* The card of a person or a zone: under it, one at a time. */
+.parley-zone-card { position: absolute; z-index: 3; transform: translateX(-50%); margin-top: 6px; width: max-content; max-width: min(21rem, 80vw); box-sizing: border-box;
+  padding: .6em .75em .65em; border-radius: 12px; background: var(--parley-bg); color: var(--parley-text); border: 1px solid var(--parley-line); box-shadow: 0 8px 24px rgba(0, 0, 0, .3); text-align: left; }
+.parley-zone-card[data-side="end"] { transform: translateX(-80%); }
+.parley-zone-card[data-side="start"] { transform: translateX(-20%); }
+.parley-zone-card-name { font-weight: 700; font-size: 1.05em; }
+.parley-family .parley-zone-card-name { font-family: var(--parley-serif); }
+.parley .parley-zone-card-line { color: var(--parley-dim); margin-top: .1em; font-size: .95em; }
+.parley-zone-card-acts { display: flex; gap: .45em; margin-top: .55em; flex-wrap: wrap; }
+.parley .parley-zone-card-acts button { min-height: 2.3em; padding: 0 .85em; border-radius: 999px; font-size: .92em; }
+.parley .parley-zone-card-main { border-color: var(--parley-action); background: var(--parley-action); color: var(--parley-on-action); font-weight: 650; }
+/* THE PANEL BESIDE THE THREAD (`side`): wide, a column of its own on the right, the
+   thread and the box keeping theirs; narrow, a sheet over the thread, from the bar. */
+.parley[data-panel] { position: relative; }
+.parley[data-panel="beside"] { display: grid; grid-template-columns: minmax(0, 1fr) var(--parley-panel, 19rem); grid-template-rows: auto auto minmax(0, 1fr) auto; column-gap: 1rem; row-gap: 0; }
+.parley[data-panel="beside"] > .parley-top { grid-area: 1 / 1; }
+.parley[data-panel="beside"] > .parley-search { grid-area: 2 / 1; margin-top: var(--parley-gap); }
+.parley[data-panel="beside"] > .parley-main { grid-area: 3 / 1; margin-top: var(--parley-gap); }
+.parley[data-panel="beside"] > .parley-composer { grid-area: 4 / 1; margin-top: var(--parley-gap); }
+.parley[data-panel="beside"] > .parley-panel { grid-area: 1 / 2 / 5 / 3; }
+.parley .parley-panel-open { position: relative; flex: none; min-height: 2.1em; min-width: 2.4em; padding: 0 .5em; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; gap: .3em; color: var(--parley-dim); background: transparent; }
+.parley .parley-panel-open[hidden] { display: none; }
+/* On the right, beside the settings, whether the state is said or not. */
+.parley .parley-panel-open { margin-left: auto; }
+.parley .parley-panel-open:not([hidden]) + .parley-prefs { margin-left: 0; }
+.parley .parley-panel-open[aria-expanded="true"] { color: var(--parley-text); background: var(--parley-agent); }
+.parley-panel-count { font-size: .8em; font-weight: 700; color: var(--parley-text); }
+.parley-panel-count[hidden] { display: none; }
+.parley-panel { display: flex; flex-direction: column; gap: .5em; min-height: 0; overflow: auto; box-sizing: border-box; padding: .6em .7em; border: 1px solid var(--parley-line); border-radius: 12px; background: var(--parley-bg); }
+.parley-panel[hidden] { display: none; }
+.parley-panel[data-sheet="true"] { position: absolute; left: 0; right: 0; bottom: 0; z-index: 6; max-height: 78%; padding: .6em .9em calc(.9em + env(safe-area-inset-bottom)); border-width: 1px 0 0; border-radius: 16px 16px 0 0; box-shadow: 0 -10px 30px rgba(0, 0, 0, .25); animation: parley-sheet-up .2s cubic-bezier(.2, .8, .2, 1); }
+@media (prefers-reduced-motion: reduce) { .parley-panel[data-sheet="true"] { animation: none; } }
+.parley-panel-head { display: flex; align-items: center; justify-content: space-between; gap: .5em; }
+.parley-panel-name { margin: 0; font-size: .95em; font-weight: 700; overflow-wrap: anywhere; }
+.parley .parley-panel-fold { min-height: 2em; min-width: 2em; padding: 0; border-color: transparent; background: transparent; color: var(--parley-dim); display: inline-flex; align-items: center; justify-content: center; }
+.parley-panel-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: .15em; }
+.parley-panel-item { display: flex; align-items: flex-start; gap: .55em; padding: .3em .25em; border-radius: 8px; }
+.parley-panel-item:hover { background: var(--parley-agent); }
+.parley .parley-panel-tick { flex: none; min-height: 0; width: 1.35em; height: 1.35em; margin-top: .1em; padding: 0; border: 1.5px solid var(--parley-dim); border-radius: 5px; display: inline-flex; align-items: center; justify-content: center; background: var(--parley-bg); color: transparent; }
+.parley .parley-panel-tick[aria-checked="true"] { border-color: var(--parley-action); background: var(--parley-action); color: var(--parley-on-action); }
+.parley .parley-panel-tick[data-busy="true"] { opacity: .6; }
+.parley-panel-tick .parley-sign, .parley-panel-mark .parley-sign { width: .95em; height: .95em; }
+.parley-panel-mark { flex: none; width: 1.35em; height: 1.35em; margin-top: .1em; display: inline-flex; align-items: center; justify-content: center; color: var(--parley-dim); }
+.parley-panel-what { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: .05em; }
+.parley .parley-panel-title { min-height: 0; padding: 0; border: 0; border-radius: 4px; background: transparent; color: var(--parley-text); text-align: left; font-weight: 550; line-height: 1.35; overflow-wrap: anywhere; }
+.parley button.parley-panel-title:hover { text-decoration: underline; text-underline-offset: 2px; }
+.parley-panel-text { font-size: .85em; color: var(--parley-dim); overflow-wrap: anywhere; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; }
+.parley-panel-meta { font-size: .8em; color: var(--parley-dim); overflow-wrap: anywhere; }
+.parley-panel-item[data-tone="active"] .parley-panel-meta { color: var(--parley-action); }
+.parley-panel-item[data-tone="attention"] .parley-panel-meta { color: var(--parley-ask); font-weight: 600; }
+.parley-panel-item[data-done="true"] .parley-panel-title { color: var(--parley-dim); text-decoration: line-through; text-decoration-color: color-mix(in srgb, var(--parley-dim) 60%, transparent); }
+.parley-panel-empty { color: var(--parley-dim); font-size: .9em; }
+.parley .parley-panel-done { align-self: flex-start; min-height: 2em; padding: 0 .5em; border-color: transparent; background: transparent; color: var(--parley-dim); font-size: .85em; display: inline-flex; align-items: center; gap: .3em; }
+.parley-panel-done .parley-sign { width: 1em; height: 1em; }
+.parley .parley-panel-action { align-self: flex-start; min-height: 2.2em; }
+.parley-panel-problem { color: var(--parley-caution); font-size: .85em; }
+
+/* QUESTIONS ON ONE CARD, AND THEIR SELECTORS (#195), after the designer's pass: one chip style
+   for every kind of question, the theme's colour on every control, a quiet Send until ready. */
+.parley .parley-choices button[aria-pressed="true"], .parley .parley-pickrow button[aria-pressed="true"], .parley .parley-input-scale button[aria-pressed="true"],
+.parley .parley-picks .parley-pick[aria-checked="true"] { border-color: var(--parley-action); background: color-mix(in srgb, var(--parley-action) 18%, var(--parley-bg)); color: var(--parley-text); font-weight: 700; outline: none; box-shadow: none; }
+.parley-series { display: flex; flex-direction: column; gap: .8em; container-type: inline-size; container-name: parleyseries; }
+.parley-said:has(.parley-series) > .parley-text { font-weight: 650; }
+.parley-series-q { display: flex; flex-direction: column; gap: .4em; padding-top: .8em; border-top: 1px dashed var(--parley-line); }
+.parley-series-q:first-child { border-top: 0; padding-top: 0; }
+.parley-series-q .parley-questions-question { margin: 0; font-weight: 650; }
+@container parleyseries (min-width: 40rem) {
+  .parley-series-q:has(.parley-input-number, .parley-input-yesno, .parley-input-slider, .parley-input-range, .parley-input-stars, .parley-input-date, .parley-input-time, .parley-input-datetime) { display: grid; grid-template-columns: 1fr minmax(12em, 18em); align-items: center; column-gap: 1.2em; }
+}
+.parley-series-nav { display: flex; align-items: center; justify-content: flex-end; gap: .8em; margin-top: .2em; padding-top: .7em; border-top: 1px solid var(--parley-line); }
+.parley-series-left { color: var(--parley-dim); font-size: .82em; margin-right: auto; }
+.parley .parley-series-nav button:disabled, .parley .parley-picks-send:disabled { opacity: 1; background: transparent; color: var(--parley-dim); border-color: var(--parley-line); }
+.parley-input { display: flex; flex-direction: column; align-items: stretch; gap: .3em; max-width: 30em; }
+.parley-input-number, .parley-input-stars, .parley-input-scale, .parley-pickrow { align-self: flex-start; }
+.parley-input-ends { display: flex; justify-content: space-between; gap: .6em; font-size: .82em; color: var(--parley-dim); }
+.parley-input-value { font-weight: 700; font-variant-numeric: tabular-nums; color: var(--parley-action); }
+/* Sliders in the theme's colour, the part chosen filled (--fill, set by the script). */
+.parley-input input[type=range] { -webkit-appearance: none; appearance: none; width: 100%; height: 1.6em; margin: 0; background: transparent; --fill: 50%; }
+.parley-input input[type=range]::-webkit-slider-runnable-track { height: 6px; border-radius: 999px; background: linear-gradient(var(--parley-action) 0 0) 0 / var(--fill) 100% no-repeat, var(--parley-line); }
+.parley-input input[type=range]::-moz-range-track { height: 6px; border-radius: 999px; background: var(--parley-line); }
+.parley-input input[type=range]::-moz-range-progress { height: 6px; border-radius: 999px; background: var(--parley-action); }
+.parley-input input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 18px; height: 18px; margin-top: -6px; border-radius: 50%; background: var(--parley-action); border: 2px solid var(--parley-bg); box-shadow: 0 0 0 1px var(--parley-action); cursor: pointer; }
+.parley-input input[type=range]::-moz-range-thumb { width: 18px; height: 18px; border-radius: 50%; background: var(--parley-action); border: 2px solid var(--parley-bg); box-shadow: 0 0 0 1px var(--parley-action); cursor: pointer; }
+/* A range: one track on the holder, the part between the two thumbs filled (--lo, --hi). */
+.parley-input-two { position: relative; height: 1.6em; --lo: 25%; --hi: 75%; background: linear-gradient(90deg, var(--parley-line) var(--lo), var(--parley-action) var(--lo) var(--hi), var(--parley-line) var(--hi)) center / 100% 6px no-repeat; border-radius: 999px; }
+.parley-input-two input { position: absolute; inset: 0; pointer-events: none; }
+.parley-input-two input::-webkit-slider-runnable-track { background: transparent; }
+.parley-input-two input::-moz-range-track { background: transparent; }
+.parley-input-two input::-moz-range-progress { background: transparent; }
+.parley-input-two input::-webkit-slider-thumb { pointer-events: auto; }
+.parley-input-two input::-moz-range-thumb { pointer-events: auto; }
+.parley-pickrow { display: flex; flex-wrap: wrap; gap: .4em; }
+.parley .parley-pickrow button { font: inherit; min-height: 2.4em; padding: 0 1.1em; border-radius: 999px; border: 1px solid var(--parley-line); background: var(--parley-bg); color: var(--parley-text); cursor: pointer; font-weight: 600; }
+.parley-input-scale { display: flex; flex-wrap: wrap; gap: .3em; }
+.parley .parley-input-scale button { min-width: 2.4em; min-height: 2.4em; padding: 0; border-radius: 8px; border: 1px solid var(--parley-line); background: var(--parley-bg); color: var(--parley-text); font: inherit; cursor: pointer; }
+.parley-input-stars { display: flex; gap: .1em; }
+.parley .parley-input-stars button { min-height: 0; padding: 0 .08em; font-size: 1.7em; line-height: 1.1; background: none; border: 0; color: color-mix(in srgb, var(--parley-dim) 45%, transparent); cursor: pointer; }
+.parley .parley-input-stars button[aria-pressed="true"] { color: var(--parley-action); }
+.parley-input-number { display: inline-flex; width: max-content; align-items: stretch; gap: 0; border: 1px solid var(--parley-line); border-radius: 10px; overflow: hidden; }
+.parley .parley-input-number button { border: 0; border-radius: 0; width: 2.6em; min-height: 2.4em; padding: 0; background: var(--parley-agent); color: var(--parley-text); font-size: 1.1em; cursor: pointer; }
+.parley-input-number input { border: 0; border-radius: 0; width: 4.5em; text-align: center; font: inherit; background: var(--parley-bg); color: var(--parley-text); }
+.parley-input-unit { align-self: center; padding: 0 .7em; color: var(--parley-dim); }
+.parley-input-rank { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: .3em; }
+.parley-input-rank li { display: flex; align-items: center; gap: .5em; border: 1px solid var(--parley-line); border-radius: 10px; padding: .2em .3em .2em .6em; background: var(--parley-bg); }
+.parley-input-rank-grip { color: var(--parley-dim); cursor: grab; touch-action: none; user-select: none; padding: .3em .2em; letter-spacing: -.15em; }
+.parley-input-rank li { cursor: grab; user-select: none; }
+.parley-input-rank li.parley-input-rank-dragging { position: relative; z-index: 2; cursor: grabbing; box-shadow: 0 6px 18px rgb(0 0 0 / .18); border-color: var(--parley-accent, currentColor); }
+.parley-input-rank-n { color: var(--parley-dim); min-width: 1.2em; font-variant-numeric: tabular-nums; }
+.parley-input-rank-t { flex: 1; min-width: 0; }
+.parley .parley-input-rank button { min-height: 2.2em; width: 2.2em; padding: 0; border: 0; border-radius: 8px; background: transparent; color: var(--parley-dim); cursor: pointer; }
+.parley .parley-input-rank button:hover { background: var(--parley-agent); color: var(--parley-text); }
+.parley-input-split-row { display: grid; grid-template-columns: minmax(5em, 9em) 1fr 4.5em; gap: .6em; align-items: center; }
+.parley-input-table-wrap { overflow-x: auto; }
+.parley-input-table { border-collapse: collapse; width: 100%; max-width: 34em; }
+.parley-input-table th, .parley-input-table td { border: 1px solid var(--parley-line); padding: .35em .55em; text-align: left; }
+.parley-input-table th { color: var(--parley-dim); font-weight: 600; font-size: .85em; }
+.parley-input-table input { width: 100%; min-width: 4em; border: 0; font: inherit; background: transparent; color: var(--parley-text); text-align: right; }
+.parley-input-table td input:focus { outline: 2px solid var(--parley-action); outline-offset: -2px; }
+.parley-input input[type=date], .parley-input input[type=time], .parley-input input[type=datetime-local] { font: inherit; padding: .4em .6em; border-radius: 10px; border: 1px solid var(--parley-line); background: var(--parley-bg); color: var(--parley-text); max-width: 16em; }
+.parley-reply-to.parley-other { font-size: .9em; margin-top: .25em; }
+
+/* ---- what the agent recommends, and the reply it suggests (#198) ---- */
+.parley-recommended { display: inline-flex; align-items: center; margin-left: .45em; padding: .05em .5em; border-radius: 999px; font-size: .72em; font-weight: 650; letter-spacing: .01em; color: var(--parley-action); background: color-mix(in srgb, var(--parley-action) 12%, transparent); white-space: nowrap; vertical-align: .1em; }
+.parley [data-recommended="true"] { border-color: color-mix(in srgb, var(--parley-action) 60%, var(--parley-line)); }
+.parley-input > .parley-recommended { align-self: flex-start; margin: 0 0 .35em; }
+.parley .parley-suggest { display: flex; align-items: center; gap: .55em; width: 100%; max-width: var(--parley-column); margin-inline: auto; box-sizing: border-box; min-height: 0; padding: .45em .8em; border: 1px dashed color-mix(in srgb, var(--parley-action) 45%, var(--parley-line)); border-radius: 14px; background: color-mix(in srgb, var(--parley-action) 5%, var(--parley-bg)); color: var(--parley-text); text-align: left; cursor: pointer; }
+.parley .parley-suggest[hidden] { display: none; }
+.parley .parley-suggest:hover { background: color-mix(in srgb, var(--parley-action) 10%, var(--parley-bg)); }
+.parley-suggest-label { flex: none; font-size: .78em; font-weight: 650; color: var(--parley-action); }
+.parley-suggest-text { flex: 1; min-width: 0; color: var(--parley-dim); font-style: italic; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; white-space: pre-line; }
+.parley-suggest-key { flex: none; font: 600 .72em/1 ui-monospace, monospace; padding: .2em .4em; border: 1px solid var(--parley-line); border-radius: 5px; color: var(--parley-dim); }
+@media (pointer: coarse) { .parley-suggest-key { display: none; } }

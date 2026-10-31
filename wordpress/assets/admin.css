@@ -1,0 +1,46 @@
+/* Settings › Guichet, as in the approved mockup: WordPress's own pieces (postbox, form-table,
+   list table), a column of state on the right. */
+.guichet-admin .guichet-intro { margin: 16px 0; }
+.guichet-cards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin: 0 0 16px; }
+.guichet-card { background: #fff; border: 1px solid #c3c4c7; padding: 12px 14px; display: flex; flex-direction: column; gap: 6px; }
+.guichet-card span { color: #50575e; font-size: 13px; }
+.guichet-card b { font-size: 20px; font-weight: 400; }
+.guichet-card small { font-size: 14px; color: #50575e; }
+.guichet-admin .tablenav.top { display: flex; justify-content: space-between; align-items: center; height: auto; margin: 6px 0; }
+.guichet-tag { display: inline-block; padding: 1px 8px; border-radius: 999px; font-size: 12px; border: 1px solid; }
+.guichet-tag.mem { color: #135e96; background: #f0f6fc; border-color: #9ec2e6; }
+.guichet-tag.adm { color: #b32d2e; background: #fcf0f1; border-color: #f0a5a6; }
+.guichet-tag.all { color: #00702a; background: #edfaef; border-color: #8fd19e; }
+.guichet-dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: #a7aaad; vertical-align: 0; }
+.guichet-dot.on { background: #00a32a; }
+.guichet-bar { width: 120px; height: 4px; background: #dcdcde; margin: 6px 0 4px; }
+.guichet-bar i { display: block; height: 100%; background: #2271b1; }
+.guichet-list td p { margin: 2px 0 4px; color: #50575e; }
+.guichet-columns { display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: 20px; align-items: start; margin-top: 16px; }
+.guichet-admin .postbox-header { padding: 0 12px; }
+.guichet-admin .postbox-header h2 { font-size: 14px; padding: 10px 0; margin: 0; }
+.guichet-admin .postbox-header .description { font-size: 12px; }
+.guichet-radio { display: block; margin: 8px 0; }
+.guichet-roles { margin: 4px 0 8px 22px; padding: 8px 12px; background: #f6f7f7; border: 1px solid #dcdcde; }
+.guichet-roles legend { float: left; width: 100%; margin-bottom: 6px; }
+.guichet-roles label { margin-right: 14px; display: inline-block; }
+.guichet-indent { margin-left: 22px !important; }
+.guichet-limits td, .guichet-limits th { vertical-align: middle; }
+.guichet-num { width: 100%; max-width: 120px; }
+.guichet-remove-limit { font-size: 18px; color: #b32d2e; text-decoration: none; }
+.guichet-token-new { border-left: 4px solid #00a32a; background: #f6f7f7; padding: 4px 12px; margin-bottom: 12px; }
+.guichet-token-new input { width: calc(100% - 90px); }
+.guichet-revoked td { color: #a7aaad; }
+.guichet-revoked strong { text-decoration: line-through; }
+.guichet-token-add { margin-top: 10px; }
+.guichet-two { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.guichet-code { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; padding: 8px 10px; background: #1d2327; color: #f0f0f1; border-radius: 3px; }
+.guichet-code code, .guichet-code pre { background: none; color: inherit; margin: 0; padding: 0; white-space: pre-wrap; word-break: break-all; font-size: 12px; }
+.guichet-side .postbox { margin-bottom: 16px; }
+.guichet-state { font-size: 14px; margin-bottom: 0; }
+.guichet-facts { display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; margin: 8px 0 0; }
+.guichet-facts dt { color: #50575e; } .guichet-facts dd { margin: 0; font-weight: 600; }
+.guichet-actions { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; border-top: 1px solid #dcdcde; background: #f6f7f7; }
+.guichet-actions .submitdelete { color: #b32d2e; }
+.guichet-tabbed .guichet-tabs { margin-bottom: 0; }
+@media (max-width: 960px) { .guichet-columns, .guichet-two { grid-template-columns: 1fr; } .guichet-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }

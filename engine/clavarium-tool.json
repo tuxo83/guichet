@@ -1,0 +1,21 @@
+{
+  "standard": "clavarium-tool/1",
+  "name": "guichet",
+  "label": "Guichet",
+  "description": "Answers questions from the documents of the conversation, and can do nothing else.",
+  "install": { "node": ">=20.11", "run": ["npm", "ci", "--omit=dev"] },
+  "launch": { "command": ["node", "bin/guichet.mjs", "--parley", "${PARLEY_DIR}"] },
+  "variables": [
+    { "name": "GUICHET_PROVIDER", "label": "Model provider", "kind": "choice", "choices": ["anthropic", "mistral", "openai", "compatible"], "default": "anthropic" },
+    { "name": "GUICHET_MODEL", "label": "Model", "kind": "text", "required": false },
+    { "name": "GUICHET_API_KEY", "label": "API key", "kind": "secret", "required": false },
+    { "name": "GUICHET_BASE_URL", "label": "Address of a compatible server (Ollama, vLLM…)", "kind": "text", "required": false },
+    { "name": "GUICHET_DOCS", "label": "Folder of the documents", "kind": "text", "default": "/work/guichet" },
+    { "name": "GUICHET_EMBED_MODEL", "label": "Embedding model, for a search by meaning (bge-m3 by default on OVH; none = words only)", "kind": "text", "required": false },
+    { "name": "GUICHET_INDEX", "label": "Folder of the index (default: .guichet-index in the home folder)", "kind": "text", "required": false },
+    { "name": "GUICHET_LANG", "label": "Language", "kind": "choice", "choices": ["fr", "en"], "default": "fr" },
+    { "name": "GUICHET_TONE", "label": "Tone, in free text (e.g. « sobre et chaleureux »); empty = neutral and sober", "kind": "text", "required": false },
+    { "name": "GUICHET_RELAY", "label": "Relay of a website (optional)", "kind": "text", "required": false },
+    { "name": "GUICHET_TOKEN", "label": "Token shared with the relay", "kind": "secret", "required": false }
+  ]
+}

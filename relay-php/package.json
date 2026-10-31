@@ -1,0 +1,8 @@
+{
+  "name": "guichet-relay-php",
+  "version": "0.2.1",
+  "private": true,
+  "description": "Tests of the PHP Guichet relay (the relay itself is src/GuichetRelay.php, no dependency).",
+  "type": "module",
+  "scripts": { "test": "node --test test/*.test.mjs" }
+}

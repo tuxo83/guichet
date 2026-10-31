@@ -1,0 +1,12 @@
+{
+  "name": "guichet",
+  "version": "0.2.0",
+  "description": "An AI that answers questions from its documents and can do nothing else: no tool, secrets masked, any model provider.",
+  "type": "module",
+  "bin": { "guichet": "bin/guichet.mjs" },
+  "exports": { ".": "./src/core.mjs", "./providers": "./src/providers.mjs" },
+  "files": ["bin/", "src/", "examples/", "README.md", "clavarium-tool.json"],
+  "engines": { "node": ">=20.11" },
+  "scripts": { "test": "node --test test/*.test.mjs" },
+  "license": "MIT"
+}

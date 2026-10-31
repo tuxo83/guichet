@@ -1,0 +1,35 @@
+/* The frame around Parley's chat, as in the approved mockup: a bar (sign, name, open/closed), the
+   thread, a foot ("One question at a time" · "8 / 30 this hour"). Colours follow Parley's own, light
+   or dark with the visitor's device. */
+.guichet {
+  --g-bg: #ffffff; --g-text: #16181d; --g-dim: #5a5f69; --g-line: #d3d7de; --g-on: #1f9d55; --g-off: #8a8f98; --g-warn: #c98a00; --g-chip: #eef3fd; --g-chip-line: #b8cdf5; --g-chip-text: #0b53c0;
+  box-sizing: border-box; display: flex; flex-direction: column; max-width: 46rem; margin: 1.5em 0; border: 1px solid var(--g-line); border-radius: 14px; background: var(--g-bg); color: var(--g-text);
+  font: 15px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; overflow: hidden;
+}
+@media (prefers-color-scheme: dark) {
+  .guichet { --g-bg: #0f1115; --g-text: #e6e8ec; --g-dim: #a3a9b4; --g-line: #38404c; --g-chip: #15233a; --g-chip-line: #2c4a78; --g-chip-text: #8ab4ff; }
+}
+.guichet *, .guichet *::before, .guichet *::after { box-sizing: border-box; }
+.guichet-head { display: flex; align-items: center; gap: .7em; padding: .65em .9em; border-bottom: 1px solid var(--g-line); }
+.guichet-sign { flex: none; width: 2.1em; height: 2.1em; border-radius: 50%; background: var(--g-chip); border: 1px solid var(--g-chip-line); color: var(--g-chip-text); display: grid; place-items: center; }
+.guichet-who { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.guichet-who strong { font-size: 1.02em; }
+.guichet-who small { color: var(--g-dim); font-size: .85em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.guichet-pill { flex: none; display: inline-flex; align-items: center; gap: .4em; padding: .15em .7em; border: 1px solid var(--g-line); border-radius: 999px; font-size: .85em; }
+.guichet-pill i { width: .6em; height: .6em; border-radius: 50%; background: var(--g-on); }
+.guichet-pill[data-state="closed"] i { background: var(--g-off); }
+.guichet-pill[data-state="limit"] i { background: var(--g-warn); }
+.guichet-chat { height: var(--guichet-height, 520px); min-height: 0; padding: 0 .6em; }
+.guichet-chat.parley { --parley-bg: var(--g-bg); }
+/* The mockup's bar is ours: Parley's own (state, settings) is not shown to visitors. */
+.guichet .parley-top { display: none; }
+/* Parley's "waiting for you" chip: a guichet waits for nobody, it answers. */
+.guichet .parley-waits { display: none; }
+/* The sources an answer cites (`file.md`): small chips. */
+.guichet .parley-said[data-from="agent"] p code { display: inline-block; margin: .1em 0; padding: .05em .65em; border: 1px solid var(--g-chip-line); border-radius: 999px; background: var(--g-chip); color: var(--g-chip-text); font: .85em/1.6 system-ui, sans-serif; }
+.guichet .parley-box:disabled { cursor: not-allowed; opacity: .7; }
+.guichet-foot { display: flex; justify-content: space-between; gap: 1em; padding: .1em 1.1em .7em; color: var(--g-dim); font-size: .78em; }
+.guichet[data-blocked="closed"] .guichet-foot > span:first-child { visibility: hidden; }
+.guichet-note { margin: 0; padding: 1em 1.1em; }
+.guichet-note a { color: inherit; font-weight: 600; }
+.guichet-missing { padding: .6em .9em; border: 1px dashed #c62828; color: #c62828; }

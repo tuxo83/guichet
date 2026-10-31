@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guichet</title>
+<link rel="stylesheet" href="/parley/parley-ui.css">
+<style>
+  body { margin: 0; font: 15px system-ui, sans-serif; height: 100dvh; display: flex; flex-direction: column; }
+  header { padding: 10px 16px; border-bottom: 1px solid #8884; display: flex; gap: 12px; align-items: center; }
+  header .state { font-size: 13px; opacity: .7; }
+  #chat { flex: 1; min-height: 0; }
+</style>
+</head>
+<body>
+<header><strong>Guichet</strong><span class="state" id="state"></span><span style="flex:1"></span><span id="who"></span></header>
+<div id="chat"></div>
+<script type="module">
+  import { mount } from '/parley/parley-ui.js';
+  /* /?g=help for the guichet "help"; no ?g: the single guichet of 0.1's setup. */
+  const g = new URLSearchParams(location.search).get('g');
+  const base = g ? `/guichet/${encodeURIComponent(g)}` : '/guichet';
+  /* Example sign-in only: your site has its own. */
+  if (!document.cookie.includes('who=')) document.cookie = `who=${encodeURIComponent(prompt('Votre nom ?') || 'invité')}; path=/; samesite=strict`;
+  document.getElementById('who').textContent = decodeURIComponent(document.cookie.split('who=')[1].split(';')[0]);
+  const words = await fetch('/parley/texts/fr.json').then((r) => r.json()).catch(() => ({}));
+  const state = document.getElementById('state');
+  mount(document.getElementById('chat'), {
+    words, locale: 'fr', agentName: 'Guichet',
+    async load() {
+      const r = await fetch(`${base}/messages`, { credentials: 'same-origin' });
+      if (!r.ok) throw new Error(`${r.status}`);
+      const data = await r.json();
+      state.textContent = data.open ? 'ouvert' : 'fermé pour le moment';
+      return data;
+    },
+    async send(text) {
+      const r = await fetch(`${base}/say`, { method: 'POST', credentials: 'same-origin', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ text }) });
+      if (!r.ok) throw new Error((await r.json().catch(() => ({}))).error || `${r.status}`);
+    },
+  });
+</script>
+</body>
+</html>
