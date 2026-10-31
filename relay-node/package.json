@@ -4,9 +4,24 @@
   "description": "Relay between a website's visitors and a Guichet engine: one thread per signed-in person, plain HTTP + JSON, no dependency.",
   "type": "module",
   "main": "index.mjs",
-  "exports": { ".": "./index.mjs" },
-  "files": ["index.mjs", "example/", "README.md"],
-  "engines": { "node": ">=20.11" },
-  "scripts": { "test": "node --test test/*.test.mjs" },
-  "license": "MIT"
+  "exports": {
+    ".": "./index.mjs"
+  },
+  "files": [
+    "index.mjs",
+    "example/",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=20.11"
+  },
+  "scripts": {
+    "test": "node --test test/*.test.mjs"
+  },
+  "license": "MIT",
+  "keywords": [
+    "clavarium-assistant",
+    "guichet",
+    "relay"
+  ]
 }
