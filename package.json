@@ -1,5 +1,6 @@
 {
   "name": "guichet-repo",
+  "repository": { "type": "git", "url": "git+https://github.com/tuxo83/guichet.git" },
   "private": true,
   "description": "The Guichet: an AI that answers from its documents and can do nothing else -- engine, relays, WordPress plugin.",
   "type": "module",
